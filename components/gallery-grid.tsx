@@ -1,8 +1,8 @@
 import CoverCard from './cover-card'
-import type { Show } from '@/lib/mock-data'
+import type { UIShow } from '@/lib/types'
 
 interface GalleryGridProps {
-  shows: Show[]
+  shows: UIShow[]
 }
 
 export default function GalleryGrid({ shows }: GalleryGridProps) {

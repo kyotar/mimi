@@ -1,12 +1,12 @@
 'use client'
 
 import { createContext, useContext, useState } from 'react'
-import type { Show } from './mock-data'
+import type { UIShow } from './types'
 
 interface PlayerState {
-  currentShow: Show | null
+  currentShow: UIShow | null
   isPlaying: boolean
-  play: (show: Show) => void
+  play: (show: UIShow) => void
   pause: () => void
   toggle: () => void
 }
@@ -14,7 +14,7 @@ interface PlayerState {
 const PlayerContext = createContext<PlayerState | null>(null)
 
 export function PlayerProvider({ children }: { children: React.ReactNode }) {
-  const [currentShow, setCurrentShow] = useState<Show | null>(null)
+  const [currentShow, setCurrentShow] = useState<UIShow | null>(null)
   const [isPlaying, setIsPlaying] = useState(false)
 
   return (

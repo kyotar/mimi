@@ -2,14 +2,14 @@
 
 import Link from 'next/link'
 import { usePlayer } from '@/lib/player-context'
-import { PALETTES } from '@/lib/mock-data'
+import { getPalette } from '@/lib/types'
 
 export default function PlayerBar() {
   const { currentShow, isPlaying, toggle } = usePlayer()
 
   if (!currentShow) return null
 
-  const palette = PALETTES[currentShow.palette]
+  const palette = getPalette(currentShow.id)
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-40 bg-vinyl border-t border-white/10">
@@ -17,15 +17,24 @@ export default function PlayerBar() {
         {/* Cover thumbnail */}
         <Link href={`/shows/${currentShow.id}`} className="flex-shrink-0">
           <div
-            className="w-10 h-10 rounded-mimi flex items-center justify-center"
+            className="w-10 h-10 rounded-mimi overflow-hidden relative"
             style={{ backgroundColor: palette.bg }}
           >
-            <span
-              className="font-serif text-sm font-bold opacity-40"
-              style={{ color: palette.fg }}
-            >
-              {currentShow.title.slice(0, 2)}
-            </span>
+            {currentShow.imageUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={currentShow.imageUrl}
+                alt={currentShow.title}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <span
+                className="absolute inset-0 flex items-center justify-center font-serif text-sm font-bold opacity-40"
+                style={{ color: palette.fg }}
+              >
+                {currentShow.title.slice(0, 2)}
+              </span>
+            )}
           </div>
         </Link>
 
@@ -34,7 +43,7 @@ export default function PlayerBar() {
           <p className="font-sans text-xs text-cream/90 font-medium truncate">
             {currentShow.title}
           </p>
-          <p className="font-mono text-xs text-cream/40 truncate">{currentShow.host}</p>
+          {currentShow.host && <p className="font-mono text-xs text-cream/40 truncate">{currentShow.host}</p>}
         </div>
 
         {/* Play / pause */}

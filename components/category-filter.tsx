@@ -1,6 +1,6 @@
 'use client'
 
-import { CATEGORIES, type Category } from '@/lib/mock-data'
+import { CATEGORIES, type Category } from '@/lib/types'
 
 interface CategoryFilterProps {
   active: Category

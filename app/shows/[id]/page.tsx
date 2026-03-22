@@ -1,22 +1,22 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import EpisodeList from '@/components/episode-list'
-import { SHOWS, PALETTES, getEpisodes } from '@/lib/mock-data'
+import { getShow, getShowEpisodes } from '@/lib/spotify'
+import { getPalette } from '@/lib/types'
 
 interface Props {
   params: { id: string }
 }
 
-export function generateStaticParams() {
-  return SHOWS.map((s) => ({ id: s.id }))
-}
+export default async function ShowDetailPage({ params }: Props) {
+  const [show, episodes] = await Promise.all([
+    getShow(params.id),
+    getShowEpisodes(params.id),
+  ])
 
-export default function ShowDetailPage({ params }: Props) {
-  const show = SHOWS.find((s) => s.id === params.id)
   if (!show) notFound()
 
-  const episodes = getEpisodes(show.id)
-  const palette = PALETTES[show.palette]
+  const palette = getPalette(show.id)
 
   return (
     <main className="pt-14 pb-16">
@@ -26,48 +26,34 @@ export default function ShowDetailPage({ params }: Props) {
         style={{ backgroundColor: palette.bg }}
       >
         {/* Cover art */}
-        <div
-          className="flex-shrink-0 w-40 h-40 md:w-48 md:h-48 rounded-mimi flex items-center justify-center"
-          style={{ backgroundColor: `${palette.fg}15` }}
-        >
-          <span
-            className="font-serif text-6xl font-bold opacity-40 select-none"
-            style={{ color: palette.fg }}
-          >
-            {show.title.slice(0, 2)}
-          </span>
+        <div className="flex-shrink-0 w-40 h-40 md:w-48 md:h-48 rounded-mimi overflow-hidden">
+          {show.imageUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={show.imageUrl} alt={show.title} className="w-full h-full object-cover" />
+          ) : (
+            <div
+              className="w-full h-full flex items-center justify-center"
+              style={{ backgroundColor: `${palette.fg}15` }}
+            >
+              <span className="font-serif text-6xl font-bold opacity-40 select-none" style={{ color: palette.fg }}>
+                {show.title.slice(0, 2)}
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Info */}
         <div className="flex flex-col justify-end pb-2">
-          <p
-            className="font-mono text-xs uppercase tracking-widest mb-2 opacity-50"
-            style={{ color: palette.fg }}
-          >
-            {show.category}
-          </p>
-          <h1
-            className="font-serif text-4xl md:text-5xl italic leading-tight mb-3"
-            style={{ color: palette.fg }}
-          >
+          <h1 className="font-serif text-4xl md:text-5xl italic leading-tight mb-3" style={{ color: palette.fg }}>
             {show.title}
           </h1>
-          <p
-            className="font-sans text-sm mb-1 opacity-70"
-            style={{ color: palette.fg }}
-          >
+          <p className="font-sans text-sm mb-1 opacity-70" style={{ color: palette.fg }}>
             {show.host}
           </p>
-          <p
-            className="font-mono text-xs opacity-40"
-            style={{ color: palette.fg }}
-          >
+          <p className="font-mono text-xs opacity-40" style={{ color: palette.fg }}>
             {show.episodeCount} エピソード
           </p>
-          <p
-            className="font-sans text-sm mt-4 max-w-md leading-relaxed opacity-80"
-            style={{ color: palette.fg }}
-          >
+          <p className="font-sans text-sm mt-4 max-w-md leading-relaxed opacity-80 line-clamp-3" style={{ color: palette.fg }}>
             {show.description}
           </p>
         </div>
@@ -81,14 +67,7 @@ export default function ShowDetailPage({ params }: Props) {
             ← 戻る
           </Link>
         </div>
-
-        {episodes.length > 0 ? (
-          <EpisodeList show={show} episodes={episodes} />
-        ) : (
-          <div className="py-12 text-center">
-            <p className="font-sans text-sm text-ink/40">エピソードデータは近日公開予定です</p>
-          </div>
-        )}
+        <EpisodeList show={show} episodes={episodes} />
       </div>
     </main>
   )

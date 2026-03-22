@@ -2,15 +2,15 @@
 
 import Link from 'next/link'
 import { usePlayer } from '@/lib/player-context'
-import { PALETTES, type Show } from '@/lib/mock-data'
+import { getPalette, type UIShow } from '@/lib/types'
 
 interface CoverCardProps {
-  show: Show
+  show: UIShow
 }
 
 export default function CoverCard({ show }: CoverCardProps) {
   const { play, currentShow, isPlaying } = usePlayer()
-  const palette = PALETTES[show.palette]
+  const palette = getPalette(show.id)
   const isActive = currentShow?.id === show.id && isPlaying
 
   return (
@@ -19,15 +19,25 @@ export default function CoverCard({ show }: CoverCardProps) {
       className="relative block aspect-square overflow-hidden group"
       style={{ backgroundColor: palette.bg }}
     >
-      {/* Cover art — initials */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center p-3">
-        <span
-          className="font-serif text-3xl md:text-4xl font-bold leading-none opacity-30 select-none"
-          style={{ color: palette.fg }}
-        >
-          {show.title.slice(0, 2)}
-        </span>
-      </div>
+      {/* Cover art */}
+      {show.imageUrl ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={show.imageUrl}
+          alt={show.title}
+          loading="lazy"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+      ) : (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span
+            className="font-serif text-4xl font-bold opacity-20 select-none"
+            style={{ color: palette.fg }}
+          >
+            {show.title.slice(0, 2)}
+          </span>
+        </div>
+      )}
 
       {/* Hover / active overlay */}
       <div
@@ -47,13 +57,11 @@ export default function CoverCard({ show }: CoverCardProps) {
           aria-label={`${show.title}を再生`}
         >
           {isActive ? (
-            // pause icon
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
               <rect x="2" y="2" width="3.5" height="10" rx="1" fill="#1c1a17" />
               <rect x="8.5" y="2" width="3.5" height="10" rx="1" fill="#1c1a17" />
             </svg>
           ) : (
-            // play icon
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
               <path d="M3 2l9 5-9 5V2z" fill="#1c1a17" />
             </svg>
@@ -62,10 +70,9 @@ export default function CoverCard({ show }: CoverCardProps) {
         <p className="font-sans text-xs text-cream/90 font-medium leading-tight line-clamp-2">
           {show.title}
         </p>
-        <p className="font-mono text-xs text-cream/50 mt-0.5">{show.host}</p>
+        {show.host && <p className="font-mono text-xs text-cream/50 mt-0.5">{show.host}</p>}
       </div>
 
-      {/* Playing indicator dot */}
       {isActive && (
         <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-rust" />
       )}

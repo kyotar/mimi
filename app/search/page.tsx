@@ -1,25 +1,37 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePlayer } from '@/lib/player-context'
-import { SHOWS, PALETTES } from '@/lib/mock-data'
+import { getPalette, type UIShow } from '@/lib/types'
 
 export default function SearchPage() {
   const [query, setQuery] = useState('')
+  const [results, setResults] = useState<UIShow[]>([])
+  const [loading, setLoading] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const { play, currentShow, isPlaying } = usePlayer()
 
-  const q = query.trim().toLowerCase()
-  const results = q
-    ? SHOWS.filter(
-        (s) =>
-          s.title.toLowerCase().includes(q) ||
-          s.host.toLowerCase().includes(q) ||
-          s.category.includes(q) ||
-          s.description.toLowerCase().includes(q)
-      )
-    : []
+  // Debounced search
+  useEffect(() => {
+    const q = query.trim()
+    if (!q) { setResults([]); return }
+
+    setLoading(true)
+    const timer = setTimeout(() => {
+      fetch(`/api/spotify/search?q=${encodeURIComponent(q)}`)
+        .then((r) => r.json())
+        .then((data) => {
+          setResults(Array.isArray(data) ? data : [])
+          setLoading(false)
+        })
+        .catch(() => setLoading(false))
+    }, 350)
+
+    return () => clearTimeout(timer)
+  }, [query])
+
+  const q = query.trim()
 
   return (
     <main className="pt-14 pb-16">
@@ -28,10 +40,7 @@ export default function SearchPage() {
         <div className="relative">
           <svg
             className="absolute left-3 top-1/2 -translate-y-1/2 text-ink/30"
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
+            width="16" height="16" viewBox="0 0 16 16" fill="none"
           >
             <circle cx="7" cy="7" r="5" stroke="currentColor" strokeWidth="1.5" />
             <path d="M11 11l3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
@@ -41,9 +50,9 @@ export default function SearchPage() {
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="番組名、ホスト、カテゴリで検索…"
+            placeholder="番組名、ホスト、ジャンルで検索…"
             autoFocus
-            className="w-full pl-9 pr-4 py-2.5 bg-tan/20 border border-tan/60 rounded-mimi font-sans text-sm text-ink placeholder:text-ink/30 focus:outline-none focus:border-ink/40 focus:bg-cream transition-colors"
+            className="w-full pl-9 pr-9 py-2.5 bg-tan/20 border border-tan/60 rounded-mimi font-sans text-sm text-ink placeholder:text-ink/30 focus:outline-none focus:border-ink/40 focus:bg-cream transition-colors"
           />
           {query && (
             <button
@@ -67,8 +76,15 @@ export default function SearchPage() {
         </div>
       )}
 
+      {/* Loading */}
+      {q && loading && (
+        <div className="px-6 pt-10 flex justify-center">
+          <div className="w-5 h-5 border-2 border-tan border-t-ink/40 rounded-full animate-spin" />
+        </div>
+      )}
+
       {/* No results */}
-      {q && results.length === 0 && (
+      {q && !loading && results.length === 0 && (
         <div className="px-6 pt-12 text-center">
           <p className="font-sans text-sm text-ink/40">
             &ldquo;{query}&rdquo; に一致する番組が見つかりませんでした
@@ -77,14 +93,12 @@ export default function SearchPage() {
       )}
 
       {/* Results */}
-      {results.length > 0 && (
+      {!loading && results.length > 0 && (
         <>
-          <p className="px-6 pt-5 pb-2 font-mono text-xs text-ink/30">
-            {results.length}件
-          </p>
+          <p className="px-6 pt-5 pb-2 font-mono text-xs text-ink/30">{results.length}件</p>
           <ul className="divide-y divide-tan/30">
             {results.map((show) => {
-              const palette = PALETTES[show.palette]
+              const palette = getPalette(show.id)
               const isActive = currentShow?.id === show.id && isPlaying
 
               return (
@@ -98,12 +112,17 @@ export default function SearchPage() {
                     className="flex-shrink-0 w-12 h-12 rounded-mimi overflow-hidden relative"
                     style={{ backgroundColor: palette.bg }}
                   >
-                    <span
-                      className="absolute inset-0 flex items-center justify-center font-serif text-lg font-bold opacity-30 select-none"
-                      style={{ color: palette.fg }}
-                    >
-                      {show.title.slice(0, 2)}
-                    </span>
+                    {show.imageUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={show.imageUrl} alt={show.title} className="w-full h-full object-cover" />
+                    ) : (
+                      <span
+                        className="absolute inset-0 flex items-center justify-center font-serif text-lg font-bold opacity-30 select-none"
+                        style={{ color: palette.fg }}
+                      >
+                        {show.title.slice(0, 2)}
+                      </span>
+                    )}
                     {isActive && (
                       <div className="absolute inset-0 flex items-center justify-center bg-black/40">
                         <div className="w-1.5 h-1.5 rounded-full bg-rust" />
@@ -118,17 +137,8 @@ export default function SearchPage() {
                         {show.title}
                       </p>
                     </Link>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <span className="font-sans text-xs text-ink/50">{show.host}</span>
-                      <span className="text-tan">·</span>
-                      <span
-                        className="font-mono text-xs px-1.5 py-0.5 rounded"
-                        style={{ backgroundColor: `${palette.bg}20`, color: palette.bg }}
-                      >
-                        {show.category}
-                      </span>
-                    </div>
-                    <p className="font-sans text-xs text-ink/40 mt-1 truncate">{show.description}</p>
+                    <p className="font-sans text-xs text-ink/50 mt-0.5 truncate">{show.host}</p>
+                    <p className="font-sans text-xs text-ink/30 mt-0.5 truncate">{show.description}</p>
                   </div>
 
                   {/* Play button */}
