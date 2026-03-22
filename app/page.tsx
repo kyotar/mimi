@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import ShowScroll from '@/components/show-scroll'
 import CategoryCards from '@/components/category-cards'
+import HeroShow from '@/components/hero-show'
 import { searchShows } from '@/lib/spotify'
 import { getPickupKeyword, NEW_QUERIES } from '@/lib/discover'
 
@@ -28,22 +29,17 @@ export default async function HomePage() {
 
   return (
     <main className="pt-14 pb-16">
-      {/* 今週のピックアップ */}
-      <section className="py-8">
-        <div className="flex items-center justify-between px-6 mb-4">
-          <div>
-            <h2 className="font-serif text-xl italic text-ink">今週のピックアップ</h2>
-            <span className="font-mono text-xs text-ink/40 mt-0.5 block">#{keyword}</span>
-          </div>
-          <Link
-            href="/gallery"
-            className="font-sans text-xs text-ink/40 hover:text-rust transition-colors"
-          >
-            すべて見る →
-          </Link>
-        </div>
-        <ShowScroll shows={pickupShows} />
-      </section>
+      {/* キャッチコピー */}
+      <div className="py-10 flex items-center justify-center px-6">
+        <p className="font-serif text-2xl md:text-3xl italic text-ink text-center leading-snug">
+          ジャケットで、推しの番組と出会う。
+        </p>
+      </div>
+
+      {/* 今日の1枚 */}
+      {pickupShows[0] && (
+        <HeroShow show={pickupShows[0]} keyword={keyword} />
+      )}
 
       {/* カテゴリーから探す */}
       <section className="py-8 border-t border-tan/40">

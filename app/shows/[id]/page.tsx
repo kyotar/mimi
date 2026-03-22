@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import EpisodeList from '@/components/episode-list'
+import ShareButton from '@/components/share-button'
 import { getShow, getShowEpisodes } from '@/lib/spotify'
 import { getPalette } from '@/lib/types'
 
@@ -56,6 +57,17 @@ export default async function ShowDetailPage({ params }: Props) {
           <p className="font-sans text-sm mt-4 max-w-md leading-relaxed opacity-80 line-clamp-3" style={{ color: palette.fg }}>
             {show.description}
           </p>
+          <div className="mt-6 flex items-center gap-3">
+            <a
+              href={show.spotifyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-rust text-cream rounded-pill px-5 py-2 font-sans text-sm hover:opacity-90 transition-opacity"
+            >
+              Spotifyで聴く
+            </a>
+            <ShareButton show={show} />
+          </div>
         </div>
       </div>
 
