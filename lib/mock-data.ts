@@ -9,7 +9,6 @@ export interface Show {
   palette: number
   episodeCount: number
   description: string
-  weeklyPlays: number
 }
 
 export interface Episode {
@@ -39,7 +38,6 @@ export const SHOWS: Show[] = [
     category: 'デザイン',
     palette: 0,
     episodeCount: 48,
-    weeklyPlays: 32847,
     description: '東京のクリエイターたちがデザインプロセスと制作の裏側を語る',
   },
   {
@@ -49,7 +47,6 @@ export const SHOWS: Show[] = [
     category: 'デザイン',
     palette: 2,
     episodeCount: 31,
-    weeklyPlays: 18520,
     description: 'UIデザインの最前線。プロダクトデザイナーたちのリアルな声',
   },
   {
@@ -59,7 +56,6 @@ export const SHOWS: Show[] = [
     category: 'デザイン',
     palette: 5,
     episodeCount: 22,
-    weeklyPlays: 9340,
     description: 'タイポグラフィとフォントの深い世界へ',
   },
   {
@@ -69,7 +65,6 @@ export const SHOWS: Show[] = [
     category: 'デザイン',
     palette: 3,
     episodeCount: 17,
-    weeklyPlays: 7210,
     description: 'スタートアップから大企業まで、ブランド構築の現場から',
   },
   {
@@ -79,7 +74,6 @@ export const SHOWS: Show[] = [
     category: 'デザイン',
     palette: 1,
     episodeCount: 29,
-    weeklyPlays: 11080,
     description: 'モーションデザインとアニメーションの技術と哲学',
   },
   {
@@ -89,7 +83,6 @@ export const SHOWS: Show[] = [
     category: 'テック',
     palette: 1,
     episodeCount: 67,
-    weeklyPlays: 54120,
     description: '開発者たちのカジュアルな技術談義。週3回更新',
   },
   {
@@ -99,7 +92,6 @@ export const SHOWS: Show[] = [
     category: 'テック',
     palette: 4,
     episodeCount: 38,
-    weeklyPlays: 41350,
     description: 'AIの最新動向と実装の現場を第一線の研究者と語る',
   },
   {
@@ -109,7 +101,6 @@ export const SHOWS: Show[] = [
     category: 'テック',
     palette: 0,
     episodeCount: 55,
-    weeklyPlays: 28640,
     description: 'オープンソースコミュニティの人と文化に迫るポッドキャスト',
   },
   {
@@ -119,7 +110,6 @@ export const SHOWS: Show[] = [
     category: 'テック',
     palette: 3,
     episodeCount: 41,
-    weeklyPlays: 16790,
     description: 'クラウドインフラとSREの実践知識を共有する場',
   },
   {
@@ -129,7 +119,6 @@ export const SHOWS: Show[] = [
     category: 'テック',
     palette: 2,
     episodeCount: 26,
-    weeklyPlays: 12430,
     description: 'プロダクトマネジメントとエンジニアリングの交差点',
   },
   {
@@ -139,7 +128,6 @@ export const SHOWS: Show[] = [
     category: 'ビジネス',
     palette: 4,
     episodeCount: 44,
-    weeklyPlays: 38910,
     description: '国内スタートアップ創業者たちのリアルな起業ストーリー',
   },
   {
@@ -149,7 +137,6 @@ export const SHOWS: Show[] = [
     category: 'ビジネス',
     palette: 0,
     episodeCount: 33,
-    weeklyPlays: 22160,
     description: 'ベンチャーキャピタリストが語る投資の判断基準と市場観',
   },
   {
@@ -159,7 +146,6 @@ export const SHOWS: Show[] = [
     category: 'ビジネス',
     palette: 5,
     episodeCount: 19,
-    weeklyPlays: 8750,
     description: '海外進出した日本企業の挑戦と学び',
   },
   {
@@ -169,7 +155,6 @@ export const SHOWS: Show[] = [
     category: 'ビジネス',
     palette: 2,
     episodeCount: 28,
-    weeklyPlays: 13680,
     description: '分散チームの作り方と非同期コラボレーションの実践',
   },
   {
@@ -179,7 +164,6 @@ export const SHOWS: Show[] = [
     category: 'ライフ',
     palette: 3,
     episodeCount: 72,
-    weeklyPlays: 47230,
     description: '東京カルチャーの今。音楽、映画、食、アートを語る',
   },
   {
@@ -189,7 +173,6 @@ export const SHOWS: Show[] = [
     category: 'ライフ',
     palette: 1,
     episodeCount: 36,
-    weeklyPlays: 19850,
     description: '毎週1冊、深読みと対話で本の世界を旅する',
   },
   {
@@ -199,7 +182,6 @@ export const SHOWS: Show[] = [
     category: 'ライフ',
     palette: 5,
     episodeCount: 45,
-    weeklyPlays: 25470,
     description: '心と体の健康を科学とマインドフルネスで考える',
   },
   {
@@ -209,7 +191,6 @@ export const SHOWS: Show[] = [
     category: 'ライフ',
     palette: 4,
     episodeCount: 24,
-    weeklyPlays: 14320,
     description: '旅先で出会った人と文化の物語。世界を音で聴く',
   },
 ]
