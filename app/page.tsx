@@ -1,10 +1,22 @@
-export default function Home() {
+'use client'
+
+import { useState } from 'react'
+import CategoryFilter from '@/components/category-filter'
+import GalleryGrid from '@/components/gallery-grid'
+import { SHOWS, type Category } from '@/lib/mock-data'
+
+export default function GalleryPage() {
+  const [activeCategory, setActiveCategory] = useState<Category>('すべて')
+
+  const shows =
+    activeCategory === 'すべて'
+      ? SHOWS
+      : SHOWS.filter((s) => s.category === activeCategory)
+
   return (
-    <main className="min-h-screen bg-cream flex items-center justify-center">
-      <div className="text-center">
-        <h1 className="font-serif text-5xl italic text-rust">mimi</h1>
-        <p className="font-sans text-ink/70 mt-2 text-sm">ジャケットで推す、ポッドキャスト発見サービス</p>
-      </div>
+    <main className="pt-14 pb-16">
+      <CategoryFilter active={activeCategory} onChange={setActiveCategory} />
+      <GalleryGrid shows={shows} />
     </main>
   )
 }
