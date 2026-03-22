@@ -1,57 +1,71 @@
-'use client'
+import Link from 'next/link'
+import ShowScroll from '@/components/show-scroll'
+import CategoryCards from '@/components/category-cards'
+import { searchShows } from '@/lib/spotify'
+import { getPickupKeyword, NEW_QUERIES } from '@/lib/discover'
 
-import { useState, useEffect } from 'react'
-import CategoryFilter from '@/components/category-filter'
-import GalleryGrid from '@/components/gallery-grid'
-import { CATEGORIES, type Category, type UIShow } from '@/lib/types'
+// Revalidate every hour; keyword itself changes at UTC midnight (daily)
+export const revalidate = 3600
 
-function GallerySkeleton() {
-  return (
-    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7">
-      {Array.from({ length: 18 }).map((_, i) => (
-        <div key={i} className="aspect-square bg-tan/30 animate-pulse" />
-      ))}
-    </div>
-  )
-}
+export default async function HomePage() {
+  const keyword = getPickupKeyword()
 
-export default function GalleryPage() {
-  const [activeCategory, setActiveCategory] = useState<Category>('すべて')
-  const [shows, setShows] = useState<UIShow[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(false)
+  const [pickupShows, ...newResults] = await Promise.all([
+    searchShows(`${keyword} podcast`, 10),
+    ...NEW_QUERIES.map((q) => searchShows(q, 10)),
+  ])
 
-  useEffect(() => {
-    setLoading(true)
-    setError(false)
-    fetch(`/api/spotify/discover?category=${encodeURIComponent(activeCategory)}`)
-      .then((r) => {
-        if (!r.ok) throw new Error('Failed')
-        return r.json()
-      })
-      .then((data) => {
-        setShows(data)
-        setLoading(false)
-      })
-      .catch(() => {
-        setError(true)
-        setLoading(false)
-      })
-  }, [activeCategory])
+  // Deduplicate 新着・注目 shows
+  const seen = new Set(pickupShows.map((s) => s.id))
+  const newShows = newResults
+    .flat()
+    .filter((s) => {
+      if (seen.has(s.id)) return false
+      seen.add(s.id)
+      return true
+    })
+    .slice(0, 20)
 
   return (
     <main className="pt-14 pb-16">
-      <CategoryFilter active={activeCategory} onChange={setActiveCategory} />
-
-      {loading && <GallerySkeleton />}
-
-      {error && (
-        <div className="flex items-center justify-center py-32">
-          <p className="font-sans text-ink/40 text-sm">番組の読み込みに失敗しました</p>
+      {/* 今週のピックアップ */}
+      <section className="py-8">
+        <div className="flex items-center justify-between px-6 mb-4">
+          <div>
+            <h2 className="font-serif text-xl italic text-ink">今週のピックアップ</h2>
+            <span className="font-mono text-xs text-ink/40 mt-0.5 block">#{keyword}</span>
+          </div>
+          <Link
+            href="/gallery"
+            className="font-sans text-xs text-ink/40 hover:text-rust transition-colors"
+          >
+            すべて見る →
+          </Link>
         </div>
-      )}
+        <ShowScroll shows={pickupShows} />
+      </section>
 
-      {!loading && !error && <GalleryGrid shows={shows} />}
+      {/* カテゴリーから探す */}
+      <section className="py-8 border-t border-tan/40">
+        <div className="px-6 mb-4">
+          <h2 className="font-serif text-xl italic text-ink">カテゴリーから探す</h2>
+        </div>
+        <CategoryCards />
+      </section>
+
+      {/* 新着・注目 */}
+      <section className="py-8 border-t border-tan/40">
+        <div className="flex items-center justify-between px-6 mb-4">
+          <h2 className="font-serif text-xl italic text-ink">新着・注目</h2>
+          <Link
+            href="/gallery"
+            className="font-sans text-xs text-ink/40 hover:text-rust transition-colors"
+          >
+            もっと見る →
+          </Link>
+        </div>
+        <ShowScroll shows={newShows} />
+      </section>
     </main>
   )
 }

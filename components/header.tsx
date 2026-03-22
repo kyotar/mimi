@@ -15,6 +15,12 @@ export default function Header() {
             Discover
           </Link>
           <Link
+            href="/gallery"
+            className="font-sans text-sm text-ink/50 hover:text-rust transition-colors"
+          >
+            Gallery
+          </Link>
+          <Link
             href="/search"
             className="font-sans text-sm text-ink/50 hover:text-rust transition-colors"
           >
