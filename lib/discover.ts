@@ -36,7 +36,7 @@ export function getPickupKeyword(): string {
 
 // Queries for 新着・注目 section
 export const NEW_QUERIES = [
-  '日本語 podcast',
-  'japan podcast おすすめ',
-  '人気 ポッドキャスト',
+  'ポッドキャスト おすすめ',
+  'ポッドキャスト 人気',
+  'ポッドキャスト 2024',
 ]

@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import ShowScroll from '@/components/show-scroll'
+import ShowGrid from '@/components/show-grid'
 import CategoryCards from '@/components/category-cards'
 import HeroShow from '@/components/hero-show'
 import { searchShows } from '@/lib/spotify'
@@ -60,7 +60,7 @@ export default async function HomePage() {
             もっと見る →
           </Link>
         </div>
-        <ShowScroll shows={newShows} />
+        <ShowGrid shows={newShows} />
       </section>
     </main>
   )
