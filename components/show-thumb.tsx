@@ -5,7 +5,7 @@ import { usePlayer } from '@/lib/player-context'
 import { getPalette, type UIShow } from '@/lib/types'
 
 export default function ShowThumb({ show }: { show: UIShow }) {
-  const { play, currentShow, isPlaying } = usePlayer()
+  const { currentShow, isPlaying } = usePlayer()
   const palette = getPalette(show.id)
   const isActive = currentShow?.id === show.id && isPlaying
 
@@ -35,31 +35,17 @@ export default function ShowThumb({ show }: { show: UIShow }) {
           </div>
         )}
 
-        {/* Play overlay */}
+        {/* Hover overlay */}
         <div
           className={`absolute inset-0 bg-black/40 flex items-center justify-center transition-opacity ${
             isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
           }`}
         >
-          <button
-            onClick={(e) => {
-              e.preventDefault()
-              play(show)
-            }}
-            className="w-8 h-8 rounded-full bg-cream/90 hover:bg-cream flex items-center justify-center transition-colors"
-            aria-label={`${show.title}を再生`}
-          >
-            {isActive ? (
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                <rect x="1.5" y="1.5" width="3" height="9" rx="1" fill="#1c1a17" />
-                <rect x="7.5" y="1.5" width="3" height="9" rx="1" fill="#1c1a17" />
-              </svg>
-            ) : (
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                <path d="M2.5 1.5l8 4.5-8 4.5V1.5z" fill="#1c1a17" />
-              </svg>
-            )}
-          </button>
+          <div className="w-8 h-8 rounded-full bg-cream/90 flex items-center justify-center">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M2.5 1.5l8 4.5-8 4.5V1.5z" fill="#1c1a17" />
+            </svg>
+          </div>
         </div>
 
         {isActive && (

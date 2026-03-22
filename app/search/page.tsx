@@ -10,7 +10,7 @@ export default function SearchPage() {
   const [results, setResults] = useState<UIShow[]>([])
   const [loading, setLoading] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
-  const { play, currentShow, isPlaying } = usePlayer()
+  const { currentShow, isPlaying } = usePlayer()
 
   // Debounced search
   useEffect(() => {
@@ -141,23 +141,16 @@ export default function SearchPage() {
                     <p className="font-sans text-xs text-ink/30 mt-0.5 truncate">{show.description}</p>
                   </div>
 
-                  {/* Play button */}
-                  <button
-                    onClick={() => play(show)}
+                  {/* Detail link */}
+                  <Link
+                    href={`/shows/${show.id}`}
                     className="flex-shrink-0 w-8 h-8 rounded-full border border-tan hover:border-rust hover:text-rust text-ink/40 flex items-center justify-center transition-colors opacity-0 group-hover:opacity-100"
-                    aria-label={`${show.title}を再生`}
+                    aria-label={`${show.title}の詳細`}
                   >
-                    {isActive ? (
-                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                        <rect x="1.5" y="1.5" width="3" height="9" rx="1" fill="currentColor" />
-                        <rect x="7.5" y="1.5" width="3" height="9" rx="1" fill="currentColor" />
-                      </svg>
-                    ) : (
-                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                        <path d="M2.5 1.5l8 4.5-8 4.5V1.5z" fill="currentColor" />
-                      </svg>
-                    )}
-                  </button>
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                      <path d="M2.5 1.5l8 4.5-8 4.5V1.5z" fill="currentColor" />
+                    </svg>
+                  </Link>
                 </li>
               )
             })}

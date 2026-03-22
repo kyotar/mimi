@@ -16,6 +16,7 @@ export interface UIEpisode {
   title: string
   duration: string
   publishedAt: string
+  audioUrl: string | null
 }
 
 export const PALETTES = [

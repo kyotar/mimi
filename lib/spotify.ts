@@ -47,6 +47,7 @@ interface RawEpisode {
   name: string
   duration_ms: number
   release_date: string
+  audio_preview_url: string | null
 }
 
 function formatDuration(ms: number): string {
@@ -73,6 +74,7 @@ function toUIEpisode(e: RawEpisode): UIEpisode {
     title: e.name,
     duration: formatDuration(e.duration_ms),
     publishedAt: e.release_date,
+    audioUrl: e.audio_preview_url ?? null,
   }
 }
 

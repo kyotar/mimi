@@ -3,13 +3,14 @@
 import { usePlayer } from '@/lib/player-context'
 import type { UIShow, UIEpisode } from '@/lib/types'
 
+
 interface EpisodeListProps {
   show: UIShow
   episodes: UIEpisode[]
 }
 
 export default function EpisodeList({ show, episodes }: EpisodeListProps) {
-  const { play, currentShow, isPlaying } = usePlayer()
+  const { play, currentEpisode, isPlaying } = usePlayer()
 
   if (episodes.length === 0) {
     return (
@@ -20,7 +21,7 @@ export default function EpisodeList({ show, episodes }: EpisodeListProps) {
   return (
     <ol className="divide-y divide-tan/40">
       {episodes.map((ep, i) => {
-        const isActive = currentShow?.id === show.id && isPlaying
+        const isActive = currentEpisode?.id === ep.id && isPlaying
 
         return (
           <li key={ep.id} className="flex items-center gap-4 py-4 group">
@@ -37,7 +38,7 @@ export default function EpisodeList({ show, episodes }: EpisodeListProps) {
               </div>
             </div>
             <button
-              onClick={() => play(show)}
+              onClick={() => play(show, ep)}
               className="flex-shrink-0 w-8 h-8 rounded-full border border-tan hover:border-rust hover:text-rust flex items-center justify-center transition-colors opacity-0 group-hover:opacity-100"
               aria-label={`${ep.title}を再生`}
             >

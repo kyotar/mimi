@@ -9,7 +9,7 @@ interface CoverCardProps {
 }
 
 export default function CoverCard({ show }: CoverCardProps) {
-  const { play, currentShow, isPlaying } = usePlayer()
+  const { currentShow, isPlaying } = usePlayer()
   const palette = getPalette(show.id)
   const isActive = currentShow?.id === show.id && isPlaying
 
@@ -39,7 +39,7 @@ export default function CoverCard({ show }: CoverCardProps) {
         </div>
       )}
 
-      {/* Hover / active overlay */}
+      {/* Hover overlay */}
       <div
         className={`
           absolute inset-0 flex flex-col justify-end p-3
@@ -48,25 +48,6 @@ export default function CoverCard({ show }: CoverCardProps) {
           ${isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}
         `}
       >
-        <button
-          onClick={(e) => {
-            e.preventDefault()
-            play(show)
-          }}
-          className="self-start mb-2 w-9 h-9 rounded-full bg-cream/90 hover:bg-cream flex items-center justify-center transition-colors"
-          aria-label={`${show.title}を再生`}
-        >
-          {isActive ? (
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <rect x="2" y="2" width="3.5" height="10" rx="1" fill="#1c1a17" />
-              <rect x="8.5" y="2" width="3.5" height="10" rx="1" fill="#1c1a17" />
-            </svg>
-          ) : (
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M3 2l9 5-9 5V2z" fill="#1c1a17" />
-            </svg>
-          )}
-        </button>
         <p className="font-sans text-xs text-cream/90 font-medium leading-tight line-clamp-2">
           {show.title}
         </p>
