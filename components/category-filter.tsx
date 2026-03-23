@@ -18,7 +18,7 @@ export default function CategoryFilter({ active, onChange }: CategoryFilterProps
             className={`
               flex-shrink-0 px-4 py-1.5 rounded-pill font-sans text-sm transition-colors
               ${active === cat
-                ? 'bg-ink text-cream'
+                ? 'bg-rust text-cream'
                 : 'bg-transparent text-ink/60 hover:text-ink hover:bg-tan/40'
               }
             `}

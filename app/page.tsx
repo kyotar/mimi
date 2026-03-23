@@ -44,7 +44,7 @@ export default async function HomePage() {
       {/* カテゴリーから探す */}
       <section className="py-8 border-t border-tan/40">
         <div className="px-6 mb-4">
-          <h2 className="font-serif text-xl italic text-ink">カテゴリーから探す</h2>
+          <h2 className="font-serif text-3xl italic text-ink">カテゴリーから探す</h2>
         </div>
         <CategoryCards />
       </section>
@@ -52,7 +52,7 @@ export default async function HomePage() {
       {/* 新着・注目 */}
       <section className="py-8 border-t border-tan/40">
         <div className="flex items-center justify-between px-6 mb-4">
-          <h2 className="font-serif text-xl italic text-ink">新着・注目</h2>
+          <h2 className="font-serif text-3xl italic text-ink">新着・注目</h2>
           <Link
             href="/gallery"
             className="font-sans text-xs text-ink/40 hover:text-rust transition-colors"

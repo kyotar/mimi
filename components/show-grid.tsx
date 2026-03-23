@@ -12,7 +12,7 @@ function ShowGridCard({ show }: { show: UIShow }) {
   return (
     <Link href={`/shows/${show.id}`} className="group">
       <div
-        className="relative aspect-square rounded-mimi overflow-hidden"
+        className="relative aspect-square rounded-mimi overflow-hidden border border-tan transition-all duration-200 group-hover:scale-[1.02] group-hover:shadow-md"
         style={{ backgroundColor: palette.bg }}
       >
         {show.imageUrl ? (
@@ -21,7 +21,7 @@ function ShowGridCard({ show }: { show: UIShow }) {
             src={show.imageUrl}
             alt={show.title}
             loading="lazy"
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-full object-cover"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
@@ -37,7 +37,7 @@ function ShowGridCard({ show }: { show: UIShow }) {
           <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-rust" />
         )}
       </div>
-      <p className="font-sans text-xs text-ink font-medium mt-1.5 leading-snug line-clamp-2">
+      <p className="font-sans text-xs text-ink font-medium mt-2 leading-relaxed line-clamp-2 group-hover:text-rust transition-colors">
         {show.title}
       </p>
     </Link>
@@ -52,7 +52,7 @@ export default function ShowGrid({ shows }: ShowGridProps) {
   if (shows.length === 0) return null
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 px-6">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 px-6">
       {shows.map((show) => (
         <ShowGridCard key={show.id} show={show} />
       ))}

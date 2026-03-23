@@ -16,7 +16,7 @@ export default function CoverCard({ show }: CoverCardProps) {
   return (
     <Link
       href={`/shows/${show.id}`}
-      className="relative block aspect-square overflow-hidden group"
+      className="relative block aspect-square overflow-hidden group border border-tan rounded-mimi transition-all duration-200 hover:scale-[1.02] hover:shadow-md"
       style={{ backgroundColor: palette.bg }}
     >
       {/* Cover art */}
@@ -48,10 +48,10 @@ export default function CoverCard({ show }: CoverCardProps) {
           ${isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}
         `}
       >
-        <p className="font-sans text-xs text-cream/90 font-medium leading-tight line-clamp-2">
+        <p className="font-sans text-xs text-cream/90 font-medium leading-relaxed line-clamp-2">
           {show.title}
         </p>
-        {show.host && <p className="font-mono text-xs text-cream/50 mt-0.5">{show.host}</p>}
+        {show.host && <p className="font-mono text-xs text-rust mt-0.5">{show.host}</p>}
       </div>
 
       {isActive && (

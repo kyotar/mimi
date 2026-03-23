@@ -28,7 +28,7 @@ export default async function ShowDetailPage({ params }: Props) {
         style={{ backgroundColor: palette.bg }}
       >
         {/* Cover art */}
-        <div className="flex-shrink-0 w-40 h-40 md:w-48 md:h-48 rounded-mimi overflow-hidden">
+        <div className="flex-shrink-0 w-40 h-40 md:w-48 md:h-48 rounded-mimi overflow-hidden border border-tan">
           {show.imageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={show.imageUrl} alt={show.title} className="w-full h-full object-cover" />
@@ -73,7 +73,7 @@ export default async function ShowDetailPage({ params }: Props) {
       {/* Episodes */}
       <div className="px-6 py-8">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="font-serif text-xl italic text-ink">エピソード</h2>
+          <h2 className="font-serif text-3xl italic text-ink">エピソード</h2>
           <Link href="/" className="font-sans text-xs text-ink/40 hover:text-rust transition-colors">
             ← 戻る
           </Link>
