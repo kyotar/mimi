@@ -5,6 +5,7 @@ import HeroShow from '@/components/hero-show'
 import { searchShows } from '@/lib/spotify'
 import { getPickupKeyword, NEW_QUERIES } from '@/lib/discover'
 
+const GRID_COLS = 4
 const NEW_SHOWS_LIMIT = 24
 
 // Revalidate every hour; keyword itself changes at UTC midnight (daily)
@@ -15,21 +16,20 @@ export default async function HomePage() {
 
   const [pickupResult, ...newResults] = await Promise.all([
     searchShows(`${keyword} ポッドキャスト`, 10),
-    ...NEW_QUERIES.map((q) => searchShows(q, 20)),
+    ...NEW_QUERIES.map((q) => searchShows(q, 10)),
   ])
 
   const pickupShows = pickupResult.items
 
   // Deduplicate 新着・注目 shows
   const seen = new Set(pickupShows.map((s) => s.id))
-  const newShows = newResults
-    .flatMap((r) => r.items)
-    .filter((s) => {
-      if (seen.has(s.id)) return false
-      seen.add(s.id)
-      return true
-    })
-    .slice(0, NEW_SHOWS_LIMIT)
+  const deduped = newResults.flatMap((r) => r.items).filter((s) => {
+    if (seen.has(s.id)) return false
+    seen.add(s.id)
+    return true
+  })
+  const trimmed = Math.min(NEW_SHOWS_LIMIT, Math.floor(deduped.length / GRID_COLS) * GRID_COLS)
+  const newShows = deduped.slice(0, trimmed)
 
   return (
     <main className="pt-14 pb-16">

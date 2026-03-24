@@ -34,6 +34,7 @@ export default function GalleryClient({ initialCategory }: { initialCategory?: s
   const [retryCount, setRetryCount] = useState(0)
 
   useEffect(() => {
+    let cancelled = false
     setLoading(true)
     setError(null)
     setShows([])
@@ -51,6 +52,7 @@ export default function GalleryClient({ initialCategory }: { initialCategory?: s
         return r.json()
       })
       .then((data: { shows: UIShow[]; total: number }) => {
+        if (cancelled) return
         clearTimeout(timeout)
         const loaded = Array.isArray(data.shows) ? data.shows : []
         setShows(loaded)
@@ -59,6 +61,7 @@ export default function GalleryClient({ initialCategory }: { initialCategory?: s
         setLoading(false)
       })
       .catch((err) => {
+        if (cancelled) return
         clearTimeout(timeout)
         if (err.name === 'AbortError') {
           setError('読み込みがタイムアウトしました')
@@ -69,6 +72,7 @@ export default function GalleryClient({ initialCategory }: { initialCategory?: s
       })
 
     return () => {
+      cancelled = true
       clearTimeout(timeout)
       controller.abort()
     }
