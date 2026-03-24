@@ -6,7 +6,8 @@ export async function GET(req: NextRequest) {
   if (!q.trim()) return Response.json([])
 
   try {
-    return Response.json(await searchShows(q, 10))
+    const result = await searchShows(q, 10)
+    return Response.json(result.items)
   } catch (err) {
     console.error('Search error:', err)
     return Response.json({ error: 'Search failed' }, { status: 500 })

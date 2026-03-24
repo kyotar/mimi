@@ -63,7 +63,7 @@ function toUIShow(s: RawShow): UIShow {
     host: s.publisher ?? '',
     description: s.description,
     episodeCount: s.total_episodes,
-    imageUrl: s.images[0]?.url ?? null,
+    imageUrl: s.images?.[0]?.url ?? null,
     spotifyUrl: s.external_urls.spotify,
   }
 }
@@ -78,18 +78,28 @@ function toUIEpisode(e: RawEpisode): UIEpisode {
   }
 }
 
-// Spotify limits show search to max 10 per request
-export async function searchShows(query: string, limit = 10): Promise<UIShow[]> {
+export async function searchShows(
+  query: string,
+  limit = 10,
+  offset = 0
+): Promise<{ items: UIShow[]; total: number }> {
   const token = await getToken()
   const safeLimit = Math.min(limit, 10)
-  const params = new URLSearchParams({ q: query, type: 'show', market: 'JP', limit: String(safeLimit) })
+  const params = new URLSearchParams({
+    q: query,
+    type: 'show',
+    market: 'JP',
+    limit: String(safeLimit),
+    offset: String(offset),
+  })
   const res = await fetch(`${API_BASE}/search?${params}`, {
     headers: { Authorization: `Bearer ${token}` },
     next: { revalidate: 300 },
   })
   if (!res.ok) throw new Error(`Spotify search failed: ${res.status}`)
   const data = await res.json()
-  return ((data.shows?.items ?? []) as RawShow[]).filter(Boolean).map(toUIShow)
+  const items = ((data.shows?.items ?? []) as RawShow[]).filter(Boolean).map(toUIShow)
+  return { items, total: data.shows?.total ?? 0 }
 }
 
 export async function getShow(id: string): Promise<UIShow | null> {

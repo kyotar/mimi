@@ -22,6 +22,13 @@ export default async function ShowDetailPage({ params }: Props) {
 
   return (
     <main className="pt-14 pb-16">
+      {/* Back button at top */}
+      <div className="px-6 py-3">
+        <Link href="/" className="font-sans text-xs text-ink/40 hover:text-rust transition-colors">
+          ← 戻る
+        </Link>
+      </div>
+
       {/* Hero */}
       <div
         className="flex flex-col md:flex-row items-start gap-8 px-6 py-10"
@@ -72,12 +79,7 @@ export default async function ShowDetailPage({ params }: Props) {
 
       {/* Episodes */}
       <div className="px-6 py-8">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="font-serif text-3xl italic text-ink">エピソード</h2>
-          <Link href="/" className="font-sans text-xs text-ink/40 hover:text-rust transition-colors">
-            ← 戻る
-          </Link>
-        </div>
+        <h2 className="font-serif text-3xl italic text-ink mb-6">エピソード</h2>
         <EpisodeList show={show} episodes={episodes} />
       </div>
     </main>

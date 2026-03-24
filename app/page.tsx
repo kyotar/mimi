@@ -11,15 +11,17 @@ export const revalidate = 3600
 export default async function HomePage() {
   const keyword = getPickupKeyword()
 
-  const [pickupShows, ...newResults] = await Promise.all([
-    searchShows(`${keyword} podcast`, 10),
-    ...NEW_QUERIES.map((q) => searchShows(q, 10)),
+  const [pickupResult, ...newResults] = await Promise.all([
+    searchShows(`${keyword} ポッドキャスト`, 10),
+    ...NEW_QUERIES.map((q) => searchShows(q, 20)),
   ])
+
+  const pickupShows = pickupResult.items
 
   // Deduplicate 新着・注目 shows
   const seen = new Set(pickupShows.map((s) => s.id))
   const newShows = newResults
-    .flat()
+    .flatMap((r) => r.items)
     .filter((s) => {
       if (seen.has(s.id)) return false
       seen.add(s.id)

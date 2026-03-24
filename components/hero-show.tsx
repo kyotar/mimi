@@ -55,8 +55,10 @@ export default function HeroShow({ show, keyword }: Props) {
             {show.host && (
               <p className="font-sans text-sm text-ink/60">{show.host}</p>
             )}
-            <p className="font-sans text-sm text-ink/70 leading-relaxed line-clamp-4">
-              {show.description}
+            <p className="font-sans text-sm text-ink/70 leading-relaxed">
+              {show.description.length > 60
+                ? `${show.description.slice(0, 60)}...`
+                : show.description}
             </p>
             <span className="inline-flex items-center gap-2 bg-rust text-cream rounded-pill px-5 py-2 font-sans text-sm w-fit">
               Spotifyで聴く →

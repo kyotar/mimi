@@ -3,6 +3,11 @@
 import { usePlayer } from '@/lib/player-context'
 import type { UIShow, UIEpisode } from '@/lib/types'
 
+function formatDateJa(dateStr: string): string {
+  const [y, m, d] = dateStr.split('-')
+  if (!y || !m || !d) return dateStr
+  return `${y}年${Number(m)}月${Number(d)}日`
+}
 
 interface EpisodeListProps {
   show: UIShow
@@ -33,7 +38,7 @@ export default function EpisodeList({ show, episodes }: EpisodeListProps) {
                 {ep.title}
               </p>
               <div className="flex items-center gap-3 mt-1">
-                <span className="font-mono text-xs text-ink/40">{ep.publishedAt}</span>
+                <span className="font-mono text-xs text-ink/40">{formatDateJa(ep.publishedAt)}</span>
                 <span className="font-mono text-xs text-ink/40">{ep.duration}</span>
               </div>
             </div>

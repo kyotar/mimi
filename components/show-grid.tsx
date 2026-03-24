@@ -37,7 +37,7 @@ function ShowGridCard({ show }: { show: UIShow }) {
           <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-rust" />
         )}
       </div>
-      <p className="font-sans text-xs text-ink font-medium mt-2 leading-relaxed line-clamp-2 group-hover:text-rust transition-colors">
+      <p className="font-sans text-[13px] text-ink font-medium mt-2 leading-[1.6] line-clamp-2 group-hover:text-rust transition-colors">
         {show.title}
       </p>
     </Link>
@@ -52,7 +52,7 @@ export default function ShowGrid({ shows }: ShowGridProps) {
   if (shows.length === 0) return null
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 px-6">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 px-6">
       {shows.map((show) => (
         <ShowGridCard key={show.id} show={show} />
       ))}
