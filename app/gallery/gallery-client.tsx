@@ -1,6 +1,8 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+
+const GALLERY_PAGE_SIZE = 24
 import CategoryFilter from '@/components/category-filter'
 import GalleryGrid from '@/components/gallery-grid'
 import { type Category, type UIShow } from '@/lib/types'
@@ -53,7 +55,7 @@ export default function GalleryClient({ initialCategory }: { initialCategory?: s
         const loaded = Array.isArray(data.shows) ? data.shows : []
         setShows(loaded)
         setTotal(data.total ?? 0)
-        setNextOffset(20)
+        setNextOffset(GALLERY_PAGE_SIZE)
         setLoading(false)
       })
       .catch((err) => {
@@ -90,7 +92,7 @@ export default function GalleryClient({ initialCategory }: { initialCategory?: s
           return [...prev, ...newShows.filter((s) => !seenIds.has(s.id))]
         })
         setTotal(data.total ?? 0)
-        setNextOffset((prev) => prev + 20)
+        setNextOffset((prev) => prev + GALLERY_PAGE_SIZE)
         setLoadingMore(false)
       })
       .catch(() => {

@@ -5,6 +5,8 @@ import HeroShow from '@/components/hero-show'
 import { searchShows } from '@/lib/spotify'
 import { getPickupKeyword, NEW_QUERIES } from '@/lib/discover'
 
+const NEW_SHOWS_LIMIT = 24
+
 // Revalidate every hour; keyword itself changes at UTC midnight (daily)
 export const revalidate = 3600
 
@@ -27,7 +29,7 @@ export default async function HomePage() {
       seen.add(s.id)
       return true
     })
-    .slice(0, 20)
+    .slice(0, NEW_SHOWS_LIMIT)
 
   return (
     <main className="pt-14 pb-16">

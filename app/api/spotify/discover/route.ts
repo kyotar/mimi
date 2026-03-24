@@ -1,6 +1,8 @@
 import { searchShows } from '@/lib/spotify'
 import type { NextRequest } from 'next/server'
 
+const GALLERY_PAGE_SIZE = 24
+
 const CATEGORY_QUERIES: Record<string, string[]> = {
   'すべて':    ['ポッドキャスト おすすめ', 'ビジネス ポッドキャスト', 'テクノロジー ポッドキャスト'],
   'ビジネス':  ['ビジネス ポッドキャスト', 'スタートアップ ポッドキャスト', 'マーケティング ポッドキャスト'],
@@ -26,7 +28,7 @@ export async function GET(req: NextRequest) {
       if (!s || seen.has(s.id)) return false
       seen.add(s.id)
       return true
-    })
+    }).slice(0, GALLERY_PAGE_SIZE)
     return Response.json({ shows, total })
   } catch (err) {
     console.error('Discover error:', err)
