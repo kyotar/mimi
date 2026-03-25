@@ -1,4 +1,4 @@
-import CoverCard from './cover-card'
+import PodcastCard from './podcast-card'
 import type { UIShow } from '@/lib/types'
 
 interface GalleryGridProps {
@@ -15,9 +15,9 @@ export default function GalleryGrid({ shows }: GalleryGridProps) {
   }
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 px-6 py-6">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6 px-6 py-6">
       {shows.map((show) => (
-        <CoverCard key={show.id} show={show} />
+        <PodcastCard key={show.id} show={show} />
       ))}
     </div>
   )

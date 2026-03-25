@@ -9,11 +9,11 @@ import { type Category, type UIShow } from '@/lib/types'
 
 function GallerySkeleton() {
   return (
-    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7">
-      {Array.from({ length: 21 }).map((_, i) => (
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6 px-6 py-6">
+      {Array.from({ length: 24 }).map((_, i) => (
         <div
           key={i}
-          className="aspect-square bg-tan/30"
+          className="aspect-square bg-tan/30 rounded-mimi border border-tan/30"
           style={{ animation: 'pulse 1.5s ease-in-out infinite', animationDelay: `${i * 40}ms` }}
         />
       ))}

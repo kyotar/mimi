@@ -30,8 +30,8 @@ export default function EpisodeList({ show, episodes }: EpisodeListProps) {
 
         return (
           <li key={ep.id} className="flex items-center gap-4 py-4 group">
-            <span className="flex-shrink-0 font-mono text-xs text-rust w-6 text-right">
-              {i + 1}
+            <span className="flex-shrink-0 font-mono text-xs text-rust w-8 text-right">
+              {show.episodeCount - i}
             </span>
             <div className="flex-1 min-w-0">
               <p className="font-sans text-sm text-ink font-medium leading-snug">

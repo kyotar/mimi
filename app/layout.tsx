@@ -4,6 +4,7 @@ import './globals.css'
 import Header from '@/components/header'
 import PlayerBar from '@/components/player-bar'
 import { PlayerProvider } from '@/lib/player-context'
+import { SearchProvider } from '@/lib/search-context'
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
@@ -38,9 +39,11 @@ export default function RootLayout({
     <html lang="ja">
       <body className={`${playfair.variable} ${dmSans.variable} ${dmMono.variable} bg-cream text-ink font-sans`}>
         <PlayerProvider>
-          <Header />
-          {children}
-          <PlayerBar />
+          <SearchProvider>
+            <Header />
+            {children}
+            <PlayerBar />
+          </SearchProvider>
         </PlayerProvider>
       </body>
     </html>
