@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Playfair_Display, DM_Sans, DM_Mono } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/header'
+import Footer from '@/components/footer'
 import PlayerBar from '@/components/player-bar'
 import { PlayerProvider } from '@/lib/player-context'
 import { SearchProvider } from '@/lib/search-context'
@@ -42,6 +43,7 @@ export default function RootLayout({
           <SearchProvider>
             <Header />
             {children}
+            <Footer />
             <PlayerBar />
           </SearchProvider>
         </PlayerProvider>
