@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
-import Link from 'next/link'
 import EpisodeList from '@/components/episode-list'
+import RelatedShows from '@/components/related-shows'
 import ShareButton from '@/components/share-button'
 import DescriptionExpand from '@/components/description-expand'
 import { getShow, getShowEpisodes } from '@/lib/spotify'
@@ -19,35 +19,29 @@ export default async function ShowDetailPage({ params }: Props) {
 
   return (
     <main className="pt-14 pb-16">
-      {/* Back button at top */}
-      <div className="px-6 py-3">
-        <Link href="/" className="font-sans text-xs text-ink/40 hover:text-rust transition-colors">
-          ← 戻る
-        </Link>
-      </div>
-
       {/* Hero with blurred background */}
-      <div className="relative overflow-hidden">
-        {/* Blurred background image */}
+      <section className="relative overflow-hidden">
+        {/* Blurred background */}
         {show.imageUrl && (
           <div
-            className="absolute inset-0 scale-110"
+            className="absolute inset-0 z-0"
             style={{
               backgroundImage: `url(${show.imageUrl})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
-              filter: 'blur(40px)',
-              opacity: 0.5,
+              filter: 'blur(60px)',
+              transform: 'scale(1.15)',
+              opacity: 0.6,
             }}
           />
         )}
-        {/* Dark overlay */}
-        <div className="absolute inset-0 bg-vinyl/60" />
+        {/* Overlay */}
+        <div className="absolute inset-0 z-10" style={{ background: '#2a2520', opacity: 0.55 }} />
 
-        {/* Content */}
-        <div className="relative flex flex-col md:flex-row items-start gap-8 px-6 py-10">
+        {/* Foreground content */}
+        <div className="relative z-20 flex flex-col md:flex-row items-start gap-8 px-6 py-16">
           {/* Cover art */}
-          <div className="flex-shrink-0 w-40 h-40 md:w-48 md:h-48 rounded-mimi overflow-hidden border border-tan/30 shadow-lg">
+          <div className="flex-shrink-0 w-56 md:w-60 aspect-square rounded-mimi overflow-hidden border border-tan shadow-lg">
             {show.imageUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={show.imageUrl} alt={show.title} className="w-full h-full object-cover" />
@@ -65,9 +59,9 @@ export default async function ShowDetailPage({ params }: Props) {
             <h1 className="font-serif text-4xl md:text-5xl italic leading-tight mb-3 text-cream">
               {show.title}
             </h1>
-            <p className="font-sans text-sm text-cream/70 mb-1">
-              {show.host}
-            </p>
+            {show.host && (
+              <p className="font-sans text-sm text-cream/70 mb-1">{show.host}</p>
+            )}
             <p className="font-mono text-xs text-cream/40">
               {show.episodeCount} エピソード
             </p>
@@ -85,13 +79,16 @@ export default async function ShowDetailPage({ params }: Props) {
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Episodes */}
       <div className="px-6 py-8">
         <h2 className="font-serif text-3xl italic text-ink mb-6">エピソード</h2>
         <EpisodeList show={show} episodes={episodes} />
       </div>
+
+      {/* Related shows */}
+      <RelatedShows show={show} />
     </main>
   )
 }
