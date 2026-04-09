@@ -1,134 +1,108 @@
 'use client'
 
 import Link from 'next/link'
+import { useRef, useEffect, useState } from 'react'
 import { usePlayer } from '@/lib/player-context'
-import { getPalette } from '@/lib/types'
 
-const WAVE_DELAYS = ['0ms', '120ms', '240ms', '360ms', '480ms']
-
-function formatTime(sec: number): string {
-  if (!isFinite(sec) || sec < 0) return '0:00'
-  const m = Math.floor(sec / 60)
-  const s = Math.floor(sec % 60)
-  return `${m}:${s.toString().padStart(2, '0')}`
-}
+const WAVE_DELAYS = ['0s', '0.15s', '0.3s', '0.15s', '0s']
 
 export default function PlayerBar() {
-  const { currentShow, currentEpisode, isPlaying, currentTime, duration, ended, toggle, seek } = usePlayer()
+  const { currentShow, currentEpisode, isPlaying, ended, toggle } = usePlayer()
+  const titleRef = useRef<HTMLSpanElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [needsMarquee, setNeedsMarquee] = useState(false)
+
+  useEffect(() => {
+    if (!titleRef.current || !containerRef.current) return
+    setNeedsMarquee(titleRef.current.scrollWidth > containerRef.current.clientWidth)
+  }, [currentEpisode?.title])
 
   if (!currentShow || !currentEpisode) return null
 
-  const palette = getPalette(currentShow.id)
-  const progress = duration > 0 ? currentTime / duration : 0
-
-  const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect()
-    seek((e.clientX - rect.left) / rect.width)
-  }
-
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 bg-vinyl border-t border-white/10">
-      {/* Ended CTA */}
-      {ended && (
-        <div className="flex items-center justify-between px-6 py-3 border-b border-white/10 bg-vinyl">
-          <p className="font-sans text-xs text-cream/50">
-            {currentEpisode.audioUrl ? 'プレビュー終了' : 'プレビュー非対応'}
-          </p>
+    <div className="fixed bottom-0 left-0 right-0 z-50 bg-vinyl border-t border-tan/20 h-[72px] flex items-center px-6 gap-4">
+      {/* Left: Cover + info */}
+      <Link href={`/shows/${currentShow.id}`} className="flex items-center gap-3 flex-1 min-w-0">
+        {/* Artwork 48px */}
+        <div className="flex-shrink-0 w-12 h-12 rounded overflow-hidden">
+          {currentShow.imageUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={currentShow.imageUrl} alt={currentShow.title} className="w-full h-full object-cover" />
+          ) : (
+            <div className="w-full h-full bg-cream/10" />
+          )}
+        </div>
+
+        {/* Text */}
+        <div className="min-w-0 flex-1 max-w-[280px]">
+          <p className="font-mono text-[11px] text-cream/50 truncate">{currentShow.title}</p>
+          <div ref={containerRef} className="overflow-hidden">
+            {needsMarquee ? (
+              <div
+                className="whitespace-nowrap"
+                style={{ animation: 'marquee 12s linear infinite' }}
+              >
+                <span className="font-sans text-[13px] text-cream">{currentEpisode.title}</span>
+                <span className="font-sans text-[13px] text-cream mx-8">{currentEpisode.title}</span>
+              </div>
+            ) : (
+              <span ref={titleRef} className="font-sans text-[13px] text-cream truncate block">
+                {currentEpisode.title}
+              </span>
+            )}
+          </div>
+        </div>
+      </Link>
+
+      {/* Center: Controls */}
+      <div className="flex flex-col items-center flex-shrink-0">
+        {!ended ? (
+          <>
+            <button
+              onClick={toggle}
+              className="flex-shrink-0 w-10 h-10 rounded-full bg-cream flex items-center justify-center hover:bg-cream/90 transition-colors"
+              aria-label={isPlaying ? '一時停止' : '再生'}
+            >
+              {isPlaying ? (
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <rect x="3" y="2" width="4" height="12" rx="1" fill="#1c1a17" />
+                  <rect x="9" y="2" width="4" height="12" rx="1" fill="#1c1a17" />
+                </svg>
+              ) : (
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M4 2l10 6-10 6V2z" fill="#1c1a17" />
+                </svg>
+              )}
+            </button>
+            <span className="font-mono text-[10px] text-cream/40 mt-0.5 hidden sm:block">30sec preview</span>
+          </>
+        ) : (
           <a
             href={currentShow.spotifyUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-rust text-cream rounded-pill px-4 py-1.5 font-sans text-xs hover:opacity-90 transition-opacity"
+            className="inline-flex items-center gap-2 bg-rust text-cream rounded-pill px-4 py-2 font-sans text-xs hover:opacity-90 transition-opacity"
           >
             Spotifyで全編を聴く →
           </a>
-        </div>
-      )}
+        )}
+      </div>
 
-      {/* Progress bar */}
-      {!ended && (
-        <div
-          className="h-1 w-full bg-white/10 cursor-pointer group"
-          onClick={handleProgressClick}
-        >
+      {/* Right: Waveform */}
+      <div className="flex items-end gap-[3px] h-6 flex-shrink-0">
+        {WAVE_DELAYS.map((delay, i) => (
           <div
-            className="h-full bg-rust transition-none"
-            style={{ width: `${progress * 100}%` }}
+            key={i}
+            className="rounded-sm"
+            style={{
+              width: '3px',
+              background: '#b84c2a',
+              borderRadius: '2px',
+              height: isPlaying ? undefined : '4px',
+              animation: isPlaying ? `wave 0.8s ease-in-out infinite ${delay}` : 'none',
+            }}
           />
-        </div>
-      )}
-
-      {/* Main row */}
-      <div className="flex items-center gap-4 px-6 h-14">
-        {/* Cover */}
-        <Link href={`/shows/${currentShow.id}`} className="flex-shrink-0">
-          <div
-            className="w-9 h-9 rounded-mimi overflow-hidden"
-            style={{ backgroundColor: palette.bg }}
-          >
-            {currentShow.imageUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={currentShow.imageUrl} alt={currentShow.title} className="w-full h-full object-cover" />
-            ) : (
-              <span
-                className="w-full h-full flex items-center justify-center font-serif text-xs font-bold opacity-40"
-                style={{ color: palette.fg }}
-              >
-                {currentShow.title.slice(0, 2)}
-              </span>
-            )}
-          </div>
-        </Link>
-
-        {/* Show + episode info */}
-        <div className="flex-1 min-w-0">
-          <p className="font-sans text-xs text-cream/90 font-medium truncate">{currentEpisode.title}</p>
-          <p className="font-mono text-xs text-cream/40 truncate">{currentShow.title}</p>
-        </div>
-
-        {/* Waveform (visible when playing) */}
-        {isPlaying && (
-          <div className="flex items-end gap-0.5 h-4 flex-shrink-0">
-            {WAVE_DELAYS.map((delay, i) => (
-              <div
-                key={i}
-                className="w-0.5 rounded-full bg-rust"
-                style={{
-                  animation: `wave 0.7s ease-in-out infinite`,
-                  animationDelay: delay,
-                  height: '3px',
-                }}
-              />
-            ))}
-          </div>
-        )}
-
-        {/* Time */}
-        {!ended && duration > 0 && (
-          <span className="font-mono text-xs text-cream/40 flex-shrink-0 tabular-nums">
-            {formatTime(currentTime)}&nbsp;/&nbsp;{formatTime(duration)}
-          </span>
-        )}
-
-        {/* Play / pause button */}
-        {!ended && (
-          <button
-            onClick={toggle}
-            className="flex-shrink-0 w-9 h-9 rounded-full bg-cream/10 hover:bg-cream/20 flex items-center justify-center transition-colors"
-            aria-label={isPlaying ? '一時停止' : '再生'}
-          >
-            {isPlaying ? (
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <rect x="2" y="2" width="3.5" height="10" rx="1" fill="#f5f0e8" />
-                <rect x="8.5" y="2" width="3.5" height="10" rx="1" fill="#f5f0e8" />
-              </svg>
-            ) : (
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <path d="M3 2l9 5-9 5V2z" fill="#f5f0e8" />
-              </svg>
-            )}
-          </button>
-        )}
+        ))}
       </div>
     </div>
   )
