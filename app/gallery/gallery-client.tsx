@@ -44,10 +44,12 @@ export default function GalleryClient({ initialCategory }: { initialCategory?: s
     const controller = new AbortController()
     const timeout = setTimeout(() => controller.abort(), 30000)
 
-    fetch(`/api/spotify/discover?category=${encodeURIComponent(activeCategory)}`, {
-      signal: controller.signal,
-    })
+    const url = `/api/spotify/discover?category=${encodeURIComponent(activeCategory)}`
+    console.log('[mimi] Gallery fetch start:', url)
+
+    fetch(url, { signal: controller.signal })
       .then((r) => {
+        console.log('[mimi] Gallery response:', r.status, r.ok)
         if (!r.ok) throw new Error(`HTTP ${r.status}`)
         return r.json()
       })
@@ -55,14 +57,16 @@ export default function GalleryClient({ initialCategory }: { initialCategory?: s
         if (cancelled) return
         clearTimeout(timeout)
         const loaded = Array.isArray(data.shows) ? data.shows : []
+        console.log('[mimi] Gallery loaded:', loaded.length, 'shows, total:', data.total)
         setShows(loaded)
         setTotal(data.total ?? 0)
         setNextOffset(GALLERY_PAGE_SIZE)
         setLoading(false)
       })
-      .catch((err) => {
+      .catch((err: Error) => {
         if (cancelled) return
         clearTimeout(timeout)
+        console.error('[mimi] Gallery error:', err.name, err.message)
         if (err.name === 'AbortError') {
           setError('読み込みがタイムアウトしました')
         } else {

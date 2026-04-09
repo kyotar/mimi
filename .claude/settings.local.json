@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Claude_Preview__preview_start",
+      "Bash(find /Users/konno/git/mimi/lib -type f -name *.ts -o -name *.tsx)",
+      "Bash(ls -la /Users/konno/git/mimi/*.config.*)",
+      "Bash(git -C /Users/konno/git/mimi add -A)",
+      "Bash(git -C /Users/konno/git/mimi status)"
+    ]
+  }
+}

@@ -84,7 +84,7 @@ export async function searchShows(
   offset = 0
 ): Promise<{ items: UIShow[]; total: number }> {
   const token = await getToken()
-  const safeLimit = Math.min(limit, 10)
+  const safeLimit = Math.min(limit, 50)
   const params = new URLSearchParams({
     q: query,
     type: 'show',

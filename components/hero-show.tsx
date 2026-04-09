@@ -11,10 +11,10 @@ interface Props {
 export default function HeroShow({ show, keyword }: Props) {
   return (
     <section className="relative overflow-hidden py-16 px-6">
-      {/* Blurred background image */}
+      {/* Blurred background image (z-0) */}
       {show.imageUrl && (
         <div
-          className="absolute inset-0 scale-[1.15]"
+          className="absolute inset-0 z-[0] scale-[1.15]"
           style={{
             backgroundImage: `url(${show.imageUrl})`,
             backgroundSize: 'cover',
@@ -24,8 +24,8 @@ export default function HeroShow({ show, keyword }: Props) {
           }}
         />
       )}
-      {/* Dark overlay — Vinyl #2a2520 */}
-      <div className="absolute inset-0 bg-vinyl/55" />
+      {/* Dark overlay — Vinyl (z-1) */}
+      <div className="absolute inset-0 z-[1]" style={{ background: '#2a2520', opacity: 0.55 }} />
 
       {/* Foreground content */}
       <div className="relative z-[2]">

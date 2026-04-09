@@ -1,8 +1,6 @@
 import { searchShows } from '@/lib/spotify'
 import type { NextRequest } from 'next/server'
 
-// PC grid is 4 columns; slice total to nearest multiple so no incomplete row
-const GRID_COLS = 4
 const GALLERY_PAGE_SIZE = 24
 
 const CATEGORY_QUERIES: Record<string, string[]> = {
@@ -31,9 +29,7 @@ export async function GET(req: NextRequest) {
       seen.add(s.id)
       return true
     })
-    // Trim to the largest multiple of GRID_COLS that fits, capped at GALLERY_PAGE_SIZE
-    const trimmed = Math.min(GALLERY_PAGE_SIZE, Math.floor(allShows.length / GRID_COLS) * GRID_COLS)
-    const shows = allShows.slice(0, trimmed)
+    const shows = allShows.slice(0, GALLERY_PAGE_SIZE)
     return Response.json({ shows, total })
   } catch (err) {
     console.error('Discover error:', err)

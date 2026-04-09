@@ -67,14 +67,12 @@ export default function EpisodeList({ show, episodes }: EpisodeListProps) {
               <button
                 onClick={() => {
                   if (isCurrent) {
-                    // Same episode: toggle play/pause
                     if (isPlaying) {
                       pause()
                     } else {
                       play(show, ep)
                     }
                   } else {
-                    // Different episode: start new
                     play(show, ep)
                   }
                 }}
@@ -82,8 +80,8 @@ export default function EpisodeList({ show, episodes }: EpisodeListProps) {
                   isActive
                     ? 'border-rust bg-rust text-cream'
                     : isCurrent
-                      ? 'border-rust text-rust opacity-100'
-                      : 'border-tan text-ink hover:border-rust hover:bg-rust hover:text-cream opacity-0 group-hover:opacity-100'
+                      ? 'border-rust text-rust'
+                      : 'border-tan text-ink hover:bg-rust hover:border-rust hover:text-cream'
                 }`}
                 aria-label={`${ep.title}を${isActive ? '停止' : '再生'}`}
               >
