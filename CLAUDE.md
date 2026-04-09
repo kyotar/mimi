@@ -9,7 +9,7 @@
 ## プロジェクト概要
 - サービス名：mimi（ポッドキャスト発見サービス）
 - 技術スタック：Next.js 14（App Router）/ Tailwind CSS / Spotify Web API
-- PRDと設計書：https://www.notion.so/kyotakonno/mimi-32a2a2227f8580218d39f187320c4723
+- PRDとデザインはプロジェクトルートのREADME.mdとDESIGN.mdを参照すること
 
 ## 開発ルール
 - TypeScript厳守。any型は使わない
