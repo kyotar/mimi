@@ -5,7 +5,17 @@
       "Bash(find /Users/konno/git/mimi/lib -type f -name *.ts -o -name *.tsx)",
       "Bash(ls -la /Users/konno/git/mimi/*.config.*)",
       "Bash(git -C /Users/konno/git/mimi add -A)",
-      "Bash(git -C /Users/konno/git/mimi status)"
+      "Bash(git -C /Users/konno/git/mimi status)",
+      "Bash(git -C /Users/konno/git/mimi commit -m ':*)",
+      "Bash(git -C /Users/konno/git/mimi commit -m 'fix: gallery shows, episode player, hero blur, nav cleanup:*)",
+      "Bash(git -C /Users/konno/git/mimi push origin main)",
+      "Bash(curl -sS -o /dev/null -w \"%{http_code}\\\\n\" https://mimi-rust.vercel.app/)",
+      "Bash(curl -sS -o /dev/null -w \"%{http_code}\\\\n\" https://mimi-rust.vercel.app/gallery)",
+      "Bash(curl -sS -o /dev/null -w \"%{http_code}\\\\n\" https://mimi-rust.vercel.app/shows/2VHucnCgfUBzmEzSNTUUAf)",
+      "Bash(curl -sS -o /dev/null -w \"%{http_code}\\\\n\" \"https://mimi-rust.vercel.app/api/spotify/discover?category=%E3%81%99%E3%81%B9%E3%81%A6\")",
+      "Bash(curl -sS \"https://mimi-rust.vercel.app/api/spotify/discover?category=%E3%81%99%E3%81%B9%E3%81%A6\")",
+      "Bash(curl -sS https://mimi-rust.vercel.app/shows/2VHucnCgfUBzmEzSNTUUAf)",
+      "Bash(curl -sS https://mimi-rust.vercel.app/)"
     ]
   }
 }

@@ -1,7 +1,4 @@
-'use client'
-
 import Link from 'next/link'
-import { usePlayer } from '@/lib/player-context'
 import { getPalette, type UIShow } from '@/lib/types'
 
 interface PodcastCardProps {
@@ -9,9 +6,7 @@ interface PodcastCardProps {
 }
 
 export default function PodcastCard({ show }: PodcastCardProps) {
-  const { currentShow, isPlaying } = usePlayer()
   const palette = getPalette(show.id)
-  const isActive = currentShow?.id === show.id && isPlaying
 
   return (
     <Link
@@ -39,23 +34,12 @@ export default function PodcastCard({ show }: PodcastCardProps) {
         </div>
       )}
 
-      {/* Hover overlay with play icon */}
-      <div
-        className={`
-          absolute inset-0 flex items-center justify-center
-          bg-ink/60
-          transition-opacity duration-200
-          ${isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}
-        `}
-      >
+      {/* Hover overlay */}
+      <div className="absolute inset-0 flex items-center justify-center bg-ink/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
         <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
           <path d="M13 9l14 9-14 9V9z" fill="#f5f0e8" />
         </svg>
       </div>
-
-      {isActive && (
-        <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-rust" />
-      )}
     </Link>
   )
 }

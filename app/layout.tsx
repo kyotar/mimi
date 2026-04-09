@@ -3,9 +3,6 @@ import { Playfair_Display, DM_Sans, DM_Mono } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/header'
 import Footer from '@/components/footer'
-import PlayerBar from '@/components/player-bar'
-import { PlayerProvider } from '@/lib/player-context'
-import { SearchProvider } from '@/lib/search-context'
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
@@ -39,14 +36,9 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body className={`${playfair.variable} ${dmSans.variable} ${dmMono.variable} bg-cream text-ink font-sans`}>
-        <PlayerProvider>
-          <SearchProvider>
-            <Header />
-            {children}
-            <Footer />
-            <PlayerBar />
-          </SearchProvider>
-        </PlayerProvider>
+        <Header />
+        {children}
+        <Footer />
       </body>
     </html>
   )
