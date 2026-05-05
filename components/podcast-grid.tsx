@@ -1,0 +1,48 @@
+'use client'
+
+import { type UIShow } from '@/lib/types'
+
+interface Props {
+  shows: UIShow[]
+  isLoading: boolean
+  onSelect: (show: UIShow) => void
+}
+
+export default function PodcastGrid({ shows, isLoading, onSelect }: Props) {
+  return (
+    <div className="grid grid-cols-3 md:grid-cols-6 gap-[2px] bg-ink">
+      {shows.map((show) => (
+        <button
+          key={show.id}
+          onClick={() => onSelect(show)}
+          className="aspect-square overflow-hidden group relative bg-vinyl"
+        >
+          {show.imageUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={show.imageUrl}
+              alt={show.title}
+              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              loading="lazy"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <span className="font-serif text-2xl text-cream/30 select-none">
+                {show.title.slice(0, 2)}
+              </span>
+            </div>
+          )}
+          <div className="absolute inset-0 bg-ink/60 opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 flex items-end p-2 pointer-events-none">
+            <p className="font-sans text-xs text-cream line-clamp-2 leading-tight">
+              {show.title}
+            </p>
+          </div>
+        </button>
+      ))}
+      {isLoading &&
+        Array.from({ length: 6 }).map((_, i) => (
+          <div key={`skeleton-${i}`} className="aspect-square bg-vinyl animate-pulse" />
+        ))}
+    </div>
+  )
+}

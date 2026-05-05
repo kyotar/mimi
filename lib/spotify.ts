@@ -113,6 +113,12 @@ export async function getShow(id: string): Promise<UIShow | null> {
   return toUIShow(await res.json())
 }
 
+export async function getShowsByIds(ids: string[]): Promise<UIShow[]> {
+  if (ids.length === 0) return []
+  const results = await Promise.all(ids.slice(0, 50).map((id) => getShow(id).catch(() => null)))
+  return results.filter((s): s is UIShow => s !== null)
+}
+
 export async function getShowEpisodes(id: string, limit = 20): Promise<UIEpisode[]> {
   const token = await getToken()
   const params = new URLSearchParams({ market: 'JP', limit: String(limit) })

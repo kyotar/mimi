@@ -46,21 +46,25 @@ export default function HeroShow({ show, keyword }: Props) {
       {/* Blurred background image (z-0) */}
       {show.imageUrl && (
         <div
-          className="absolute inset-0 z-[0] scale-[1.15]"
+          className="absolute inset-0 z-0"
           style={{
             backgroundImage: `url(${show.imageUrl})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
-            filter: 'blur(60px)',
-            opacity: 0.6,
+            filter: 'blur(80px)',
+            transform: 'scale(1.2)',
+            opacity: 0.7,
           }}
         />
       )}
-      {/* Dark overlay — Vinyl (z-1) */}
-      <div className="absolute inset-0 z-[1]" style={{ background: '#2a2520', opacity: 0.55 }} />
+      {/* Dark overlay — Vinyl (z-10) */}
+      <div
+        className="absolute inset-0 z-10"
+        style={{ backgroundColor: '#2a2520', opacity: 0.55 }}
+      />
 
       {/* Foreground content */}
-      <div className="relative z-[2]">
+      <div className="relative z-20">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="font-serif text-3xl italic text-cream">今日の1枚</h2>

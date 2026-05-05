@@ -2,15 +2,25 @@ import Link from 'next/link'
 import ShowGrid from '@/components/show-grid'
 import CategoryCards from '@/components/category-cards'
 import HeroShow from '@/components/hero-show'
+import CurationShelf from '@/components/curation-shelf'
 import { type UIShow } from '@/lib/types'
+import type { CurationEntry } from '@/lib/curation'
 
 interface DiscoverClientProps {
   pickupShow: UIShow | null
   keyword: string
   newShows: UIShow[]
+  curator: string
+  curationShows: Array<{ show: UIShow; entry: CurationEntry }>
 }
 
-export default function DiscoverClient({ pickupShow, keyword, newShows }: DiscoverClientProps) {
+export default function DiscoverClient({
+  pickupShow,
+  keyword,
+  newShows,
+  curator,
+  curationShows,
+}: DiscoverClientProps) {
   return (
     <main className="pt-14 pb-16">
       {/* キャッチコピー */}
@@ -22,6 +32,9 @@ export default function DiscoverClient({ pickupShow, keyword, newShows }: Discov
 
       {/* 今日の1枚 */}
       {pickupShow && <HeroShow show={pickupShow} keyword={keyword} />}
+
+      {/* こんちゃんが今週聴いた棚 */}
+      <CurationShelf curator={curator} shows={curationShows} />
 
       {/* 気分で掘る */}
       <section className="py-8 border-t border-tan/40">

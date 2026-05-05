@@ -3,6 +3,8 @@ import EpisodeList from '@/components/episode-list'
 import RelatedShows from '@/components/related-shows'
 import ShareButton from '@/components/share-button'
 import DescriptionExpand from '@/components/description-expand'
+import Header from '@/components/header'
+import Footer from '@/components/footer'
 import { getShow, getShowEpisodes } from '@/lib/spotify'
 
 interface Props {
@@ -18,7 +20,9 @@ export default async function ShowDetailPage({ params }: Props) {
   if (!show) notFound()
 
   return (
-    <main className="pt-14 pb-16">
+    <>
+      <Header />
+      <main className="pt-14 pb-16 bg-cream">
       {/* Hero with blurred background */}
       <section className="relative overflow-hidden">
         {/* Blurred background */}
@@ -29,19 +33,22 @@ export default async function ShowDetailPage({ params }: Props) {
               backgroundImage: `url(${show.imageUrl})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
-              filter: 'blur(60px)',
-              transform: 'scale(1.15)',
-              opacity: 0.6,
+              filter: 'blur(80px)',
+              transform: 'scale(1.2)',
+              opacity: 0.7,
             }}
           />
         )}
         {/* Overlay */}
-        <div className="absolute inset-0 z-10" style={{ background: '#2a2520', opacity: 0.55 }} />
+        <div
+          className="absolute inset-0 z-10"
+          style={{ backgroundColor: '#2a2520', opacity: 0.55 }}
+        />
 
         {/* Foreground content */}
         <div className="relative z-20 flex flex-col md:flex-row items-start gap-8 px-6 py-16">
           {/* Cover art */}
-          <div className="flex-shrink-0 w-56 md:w-60 aspect-square rounded-mimi overflow-hidden border border-tan shadow-lg">
+          <div className="flex-shrink-0 w-60 aspect-square rounded-mimi overflow-hidden border border-tan shadow-2xl">
             {show.imageUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={show.imageUrl} alt={show.title} className="w-full h-full object-cover" />
@@ -90,5 +97,7 @@ export default async function ShowDetailPage({ params }: Props) {
       {/* Related shows */}
       <RelatedShows show={show} />
     </main>
+    <Footer />
+    </>
   )
 }

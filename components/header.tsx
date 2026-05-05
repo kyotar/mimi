@@ -1,5 +1,3 @@
-'use client'
-
 import Link from 'next/link'
 
 export default function Header() {
@@ -9,20 +7,12 @@ export default function Header() {
         <Link href="/" className="font-serif text-2xl italic text-rust leading-none">
           mimi
         </Link>
-        <nav className="flex items-center gap-6">
-          <Link
-            href="/"
-            className="font-sans text-sm text-ink hover:text-rust transition-colors"
-          >
-            Discover
-          </Link>
-          <Link
-            href="/gallery"
-            className="font-sans text-sm text-ink/50 hover:text-rust transition-colors"
-          >
-            Gallery
-          </Link>
-        </nav>
+        <Link
+          href="/"
+          className="font-mono text-xs text-ink/50 hover:text-rust transition-colors"
+        >
+          ← 棚に戻る
+        </Link>
       </div>
     </header>
   )

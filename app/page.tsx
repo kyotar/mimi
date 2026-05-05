@@ -1,36 +1,43 @@
-import DiscoverClient from '@/components/discover-client'
+import HomeView from '@/components/home-view'
+import Footer from '@/components/footer'
 import { searchShows } from '@/lib/spotify'
-import { getPickupKeyword, NEW_QUERIES } from '@/lib/discover'
+import { CATEGORY_QUERIES } from '@/lib/categories'
+import type { Category, UIShow } from '@/lib/types'
 
-const NEW_SHOWS_LIMIT = 24
+const PAGE_SIZE = 24
+const DEFAULT_CATEGORY: Category = 'すべて'
 
-// Revalidate every hour; keyword itself changes at UTC midnight (daily)
 export const revalidate = 3600
 
 export default async function HomePage() {
-  const keyword = getPickupKeyword()
+  const queries = CATEGORY_QUERIES[DEFAULT_CATEGORY]
 
-  const [pickupResult, ...newResults] = await Promise.all([
-    searchShows(`${keyword} ポッドキャスト`, 10),
-    ...NEW_QUERIES.map((q) => searchShows(q, 10)),
-  ])
-
-  const pickupShows = pickupResult.items
-
-  // Deduplicate 新着・注目 shows
-  const seen = new Set(pickupShows.map((s) => s.id))
-  const deduped = newResults.flatMap((r) => r.items).filter((s) => {
-    if (seen.has(s.id)) return false
-    seen.add(s.id)
-    return true
-  })
-  const newShows = deduped.slice(0, NEW_SHOWS_LIMIT)
+  let shows: UIShow[] = []
+  let total = 0
+  try {
+    const results = await Promise.all(queries.map((q) => searchShows(q, 10, 0)))
+    total = Math.max(...results.map((r) => r.total))
+    const seen = new Set<string>()
+    shows = results
+      .flatMap((r) => r.items)
+      .filter((s) => {
+        if (!s || seen.has(s.id)) return false
+        seen.add(s.id)
+        return true
+      })
+      .slice(0, PAGE_SIZE)
+  } catch {
+    // fall through with empty
+  }
 
   return (
-    <DiscoverClient
-      pickupShow={pickupShows[0] ?? null}
-      keyword={keyword}
-      newShows={newShows}
-    />
+    <>
+      <HomeView
+        initialCategory={DEFAULT_CATEGORY}
+        initialShows={shows}
+        initialTotal={total}
+      />
+      <Footer />
+    </>
   )
 }
