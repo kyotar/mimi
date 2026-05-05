@@ -10,7 +10,7 @@ interface Props {
 
 export default function PodcastGrid({ shows, isLoading, onSelect }: Props) {
   return (
-    <div className="grid grid-cols-3 md:grid-cols-6 gap-[2px] bg-ink">
+    <div className="grid grid-cols-3 md:grid-cols-6 lg:grid-cols-8 gap-[2px] bg-ink">
       {shows.map((show) => (
         <button
           key={show.id}
@@ -32,7 +32,7 @@ export default function PodcastGrid({ shows, isLoading, onSelect }: Props) {
               </span>
             </div>
           )}
-          <div className="absolute inset-0 bg-ink/60 opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 flex items-end p-2 pointer-events-none">
+          <div className="absolute inset-0 bg-ink/70 opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 hidden md:flex items-end p-2 pointer-events-none">
             <p className="font-sans text-xs text-cream line-clamp-2 leading-tight">
               {show.title}
             </p>

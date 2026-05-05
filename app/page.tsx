@@ -4,7 +4,10 @@ import { searchShows } from '@/lib/spotify'
 import { CATEGORY_QUERIES } from '@/lib/categories'
 import type { Category, UIShow } from '@/lib/types'
 
-const PAGE_SIZE = 24
+const PAGE_SIZE = 48
+const PER_QUERY_LIMIT = 10
+const WINDOWS_PER_PAGE = 2
+const QUERY_STEP = PER_QUERY_LIMIT * WINDOWS_PER_PAGE
 const DEFAULT_CATEGORY: Category = 'すべて'
 
 export const revalidate = 3600
@@ -15,8 +18,13 @@ export default async function HomePage() {
   let shows: UIShow[] = []
   let total = 0
   try {
-    const results = await Promise.all(queries.map((q) => searchShows(q, 10, 0)))
-    total = Math.max(...results.map((r) => r.total))
+    const tasks = queries.flatMap((q) =>
+      Array.from({ length: WINDOWS_PER_PAGE }, (_, i) =>
+        searchShows(q, PER_QUERY_LIMIT, i * PER_QUERY_LIMIT)
+      )
+    )
+    const results = await Promise.all(tasks)
+    total = Math.max(...results.map((r) => r.total), 0)
     const seen = new Set<string>()
     shows = results
       .flatMap((r) => r.items)
@@ -30,12 +38,16 @@ export default async function HomePage() {
     // fall through with empty
   }
 
+  const nextOffset = QUERY_STEP
+  const hasMore = nextOffset < total
+
   return (
     <>
       <HomeView
         initialCategory={DEFAULT_CATEGORY}
         initialShows={shows}
-        initialTotal={total}
+        initialNextOffset={nextOffset}
+        initialHasMore={hasMore}
       />
       <Footer />
     </>

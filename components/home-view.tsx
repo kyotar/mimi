@@ -7,19 +7,23 @@ import SearchOverlay from '@/components/search-overlay'
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll'
 import { CATEGORIES, type Category, type UIShow } from '@/lib/types'
 
-const PAGE_SIZE = 24
-
 interface Props {
   initialCategory: Category
   initialShows: UIShow[]
-  initialTotal: number
+  initialNextOffset: number
+  initialHasMore: boolean
 }
 
-export default function HomeView({ initialCategory, initialShows, initialTotal }: Props) {
+export default function HomeView({
+  initialCategory,
+  initialShows,
+  initialNextOffset,
+  initialHasMore,
+}: Props) {
   const [activeCategory, setActiveCategory] = useState<Category>(initialCategory)
   const [shows, setShows] = useState<UIShow[]>(initialShows)
-  const [offset, setOffset] = useState(PAGE_SIZE)
-  const [total, setTotal] = useState(initialTotal)
+  const [offset, setOffset] = useState(initialNextOffset)
+  const [hasMore, setHasMore] = useState(initialHasMore)
   const [isLoading, setIsLoading] = useState(false)
   const [selectedShow, setSelectedShow] = useState<UIShow | null>(null)
   const [searchOpen, setSearchOpen] = useState(false)
@@ -46,13 +50,13 @@ export default function HomeView({ initialCategory, initialShows, initialTotal }
     }
     let cancelled = false
     setIsLoading(true)
-    fetch(`/api/spotify/discover?category=${encodeURIComponent(activeCategory)}`)
+    fetch(`/api/spotify/discover?category=${encodeURIComponent(activeCategory)}&offset=0`)
       .then((r) => r.json())
-      .then((data: { shows: UIShow[]; total: number }) => {
+      .then((data: { shows: UIShow[]; nextOffset: number; hasMore: boolean }) => {
         if (cancelled) return
         setShows(Array.isArray(data.shows) ? data.shows : [])
-        setTotal(data.total ?? 0)
-        setOffset(PAGE_SIZE)
+        setOffset(data.nextOffset ?? 0)
+        setHasMore(Boolean(data.hasMore))
         setIsLoading(false)
         window.scrollTo({ top: 0, behavior: 'smooth' })
       })
@@ -64,7 +68,6 @@ export default function HomeView({ initialCategory, initialShows, initialTotal }
     }
   }, [activeCategory])
 
-  const hasMore = offset < total
   const loadMore = useCallback(() => {
     if (!hasMore || isLoading) return
     setIsLoading(true)
@@ -72,14 +75,14 @@ export default function HomeView({ initialCategory, initialShows, initialTotal }
       `/api/spotify/discover?category=${encodeURIComponent(activeCategory)}&offset=${offset}`
     )
       .then((r) => r.json())
-      .then((data: { shows: UIShow[]; total: number }) => {
+      .then((data: { shows: UIShow[]; nextOffset: number; hasMore: boolean }) => {
         const newShows = Array.isArray(data.shows) ? data.shows : []
         setShows((prev) => {
           const seen = new Set(prev.map((s) => s.id))
           return [...prev, ...newShows.filter((s) => !seen.has(s.id))]
         })
-        setOffset((o) => o + PAGE_SIZE)
-        setTotal(data.total ?? 0)
+        setOffset(data.nextOffset ?? offset)
+        setHasMore(Boolean(data.hasMore))
         setIsLoading(false)
       })
       .catch(() => setIsLoading(false))
@@ -90,25 +93,25 @@ export default function HomeView({ initialCategory, initialShows, initialTotal }
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-30 bg-ink/90 backdrop-blur-sm transition-transform duration-300 ${
+        className={`fixed top-0 left-0 right-0 z-30 bg-ink/95 backdrop-blur-sm transition-transform duration-300 ${
           hidden ? '-translate-y-full' : 'translate-y-0'
         }`}
       >
-        <div className="flex items-center gap-3 px-4 py-3">
-          <a href="/" className="font-serif italic text-xl text-rust flex-shrink-0">
+        <div className="flex items-center gap-2 px-3 py-2">
+          <a href="/" className="font-serif italic text-lg text-rust flex-shrink-0 leading-none">
             mimi
           </a>
-          <nav className="flex gap-2 overflow-x-auto scrollbar-none flex-1 min-w-0">
+          <nav className="flex gap-1.5 overflow-x-auto scrollbar-none flex-1 min-w-0">
             {CATEGORIES.map((cat) => {
               const active = cat === activeCategory
               return (
                 <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
-                  className={`flex-shrink-0 rounded-full px-3 py-1 font-mono text-xs transition-colors ${
+                  className={`flex-shrink-0 rounded-full px-2.5 py-1 font-mono text-[10px] transition-colors ${
                     active
                       ? 'bg-rust text-cream'
-                      : 'text-cream/50 hover:text-cream/80'
+                      : 'text-cream/40 hover:text-cream/70'
                   }`}
                 >
                   {cat}
@@ -118,10 +121,10 @@ export default function HomeView({ initialCategory, initialShows, initialTotal }
           </nav>
           <button
             onClick={() => setSearchOpen(true)}
-            className="text-cream/70 hover:text-cream flex-shrink-0"
+            className="text-cream/50 hover:text-cream flex-shrink-0 p-1"
             aria-label="検索"
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="11" cy="11" r="7" />
               <line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
@@ -129,14 +132,9 @@ export default function HomeView({ initialCategory, initialShows, initialTotal }
         </div>
       </header>
 
-      <main className="pt-14">
+      <main className="pt-10">
         <PodcastGrid shows={shows} isLoading={isLoading} onSelect={setSelectedShow} />
-        <div ref={sentinelRef} className="h-1" />
-        {!hasMore && shows.length > 0 && (
-          <p className="text-center font-mono text-xs text-cream/30 py-8">
-            すべて見ました
-          </p>
-        )}
+        <div ref={sentinelRef} className="h-4" />
       </main>
 
       <HalfModal

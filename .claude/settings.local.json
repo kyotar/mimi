@@ -15,7 +15,16 @@
       "Bash(curl -sS -o /dev/null -w \"%{http_code}\\\\n\" \"https://mimi-rust.vercel.app/api/spotify/discover?category=%E3%81%99%E3%81%B9%E3%81%A6\")",
       "Bash(curl -sS \"https://mimi-rust.vercel.app/api/spotify/discover?category=%E3%81%99%E3%81%B9%E3%81%A6\")",
       "Bash(curl -sS https://mimi-rust.vercel.app/shows/2VHucnCgfUBzmEzSNTUUAf)",
-      "Bash(curl -sS https://mimi-rust.vercel.app/)"
+      "Bash(curl -sS https://mimi-rust.vercel.app/)",
+      "Bash(curl -s \"https://mimi-rust.vercel.app/api/spotify/discover?category=%E3%81%99%E3%81%B9%E3%81%A6\")",
+      "Bash(curl -s \"https://mimi-rust.vercel.app/gallery\" -o /tmp/gallery.html -w \"%{http_code}\\\\n\")",
+      "Bash(curl -s \"http://localhost:3000/\")",
+      "Bash(curl -s \"http://localhost:3000/?cachebust=$\\(date +%s\\)\")",
+      "Bash(curl -s \"http://localhost:3000/?bust=$\\(date +%s\\)\")",
+      "Bash(curl -s \"https://api.github.com/repos/paper-design/agent-plugins/contents/.claude-plugin/marketplace.json\")",
+      "Bash(python3 -c \"import sys,json,base64; d=json.load\\(sys.stdin\\); print\\(base64.b64decode\\(d['content']\\).decode\\(\\)\\)\")",
+      "Bash(python3 -m json.tool /Users/konno/.claude/settings.json)",
+      "Bash(curl -s -X POST https://accounts.spotify.com/api/token -H \"Content-Type: application/x-www-form-urlencoded\" -u \"825addca3fb8459893d3034fac0c97c7:7a34e1a11bb3487bac92a856825eff31\" -d \"grant_type=client_credentials\")"
     ]
   }
 }
