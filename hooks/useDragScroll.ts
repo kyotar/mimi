@@ -4,6 +4,9 @@ import { useEffect } from 'react'
 
 export function useDragScroll() {
   useEffect(() => {
+    if (typeof window === 'undefined') return
+    if (!window.matchMedia('(pointer: fine)').matches) return
+
     let isDown = false
     let startY = 0
     let startScroll = 0
@@ -14,16 +17,17 @@ export function useDragScroll() {
       return !!target.closest('button, a, input, textarea, select, [role="button"]')
     }
 
-    const onMouseDown = (e: MouseEvent) => {
+    const onPointerDown = (e: PointerEvent) => {
+      if (e.pointerType !== 'mouse') return
       if (e.button !== 0) return
       if (isInteractive(e.target)) return
       isDown = true
       moved = false
       startY = e.pageY
       startScroll = window.scrollY
-      document.body.style.cursor = 'grabbing'
     }
-    const onMouseUp = () => {
+    const onPointerUp = () => {
+      if (!isDown) return
       isDown = false
       document.body.style.cursor = ''
       if (moved) {
@@ -35,21 +39,27 @@ export function useDragScroll() {
         window.addEventListener('click', blockClick, true)
       }
     }
-    const onMouseMove = (e: MouseEvent) => {
+    const onPointerMove = (e: PointerEvent) => {
       if (!isDown) return
+      if (e.pointerType !== 'mouse') return
       const dy = e.pageY - startY
-      if (Math.abs(dy) > 4) moved = true
+      if (Math.abs(dy) > 4) {
+        moved = true
+        document.body.style.cursor = 'grabbing'
+      }
       window.scrollTo({ top: startScroll - dy * 1.2, behavior: 'auto' })
     }
 
-    window.addEventListener('mousedown', onMouseDown)
-    window.addEventListener('mouseup', onMouseUp)
-    window.addEventListener('mousemove', onMouseMove)
+    window.addEventListener('pointerdown', onPointerDown)
+    window.addEventListener('pointerup', onPointerUp)
+    window.addEventListener('pointercancel', onPointerUp)
+    window.addEventListener('pointermove', onPointerMove)
 
     return () => {
-      window.removeEventListener('mousedown', onMouseDown)
-      window.removeEventListener('mouseup', onMouseUp)
-      window.removeEventListener('mousemove', onMouseMove)
+      window.removeEventListener('pointerdown', onPointerDown)
+      window.removeEventListener('pointerup', onPointerUp)
+      window.removeEventListener('pointercancel', onPointerUp)
+      window.removeEventListener('pointermove', onPointerMove)
       document.body.style.cursor = ''
     }
   }, [])
