@@ -28,7 +28,10 @@
       "Bash(git checkout *)",
       "Bash(git merge *)",
       "Bash(git -C /Users/konno/git/mimi pull origin main)",
-      "Bash(git -C /Users/konno/git/mimi merge claude/friendly-haibt-285c72 --no-ff -m \"Merge branch 'claude/friendly-haibt-285c72': dark theme + episodes in modal + drag scroll\")"
+      "Bash(git -C /Users/konno/git/mimi merge claude/friendly-haibt-285c72 --no-ff -m \"Merge branch 'claude/friendly-haibt-285c72': dark theme + episodes in modal + drag scroll\")",
+      "Bash(git -C /Users/konno/git/mimi merge claude/friendly-haibt-285c72 --no-ff -m \"Merge fix: drag-scroll blocking mobile taps\")",
+      "Bash(sed -n '20,24p' /Users/konno/git/mimi/friendly-haibt-285c72/components/half-modal.tsx)",
+      "Bash(sed -n '9,13p' /Users/konno/git/mimi/friendly-haibt-285c72/components/share-button.tsx)"
     ]
   }
 }

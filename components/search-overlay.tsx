@@ -20,7 +20,11 @@ export default function SearchOverlay({ open, onClose, onSelect }: Props) {
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
-    if (!open) return
+    if (!open) {
+      setQuery('')
+      setResults([])
+      return
+    }
     inputRef.current?.focus()
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
