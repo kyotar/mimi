@@ -15,16 +15,24 @@
 | Tan | `#d4c4a8` | ボーダー・サーフェス |
 | Vinyl | `#2a2520` | ダークセクション・フッター |
 
-Tailwind設定:
+Tailwind設定（ダークモード）:
 ```typescript
 colors: {
-  ink:   '#1c1a17',
-  rust:  '#b84c2a',
-  cream: '#f5f0e8',
-  tan:   '#d4c4a8',
-  vinyl: '#2a2520',
+  ink:     '#0a0a0a',  // ページ背景・グリッド背景
+  rust:    '#b84c2a',  // アクセント・CTA
+  cream:   '#ffffff',  // メインテキスト
+  tan:     '#1f1f1f',  // ボーダー・サーフェス（暗）
+  vinyl:   '#0a0a0a',  // フッター背景
+  surface: '#141414',  // ハーフモーダル背景
 }
 ```
+
+Dark Mode tokens:
+- background: `#0a0a0a`
+- surface: `#141414`
+- border: rgba(255,255,255,0.1)
+- text-primary: `#ffffff`
+- text-secondary: rgba(255,255,255,0.6)
 
 ## タイポグラフィ
 

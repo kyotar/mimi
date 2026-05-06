@@ -5,6 +5,7 @@ import PodcastGrid from '@/components/podcast-grid'
 import HalfModal from '@/components/half-modal'
 import SearchOverlay from '@/components/search-overlay'
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll'
+import { useDragScroll } from '@/hooks/useDragScroll'
 import { CATEGORIES, type Category, type UIShow } from '@/lib/types'
 
 interface Props {
@@ -30,6 +31,8 @@ export default function HomeView({
   const [hidden, setHidden] = useState(false)
   const mountedRef = useRef(false)
 
+  useDragScroll()
+
   // Hide-on-scroll header
   useEffect(() => {
     let prev = window.scrollY
@@ -54,9 +57,10 @@ export default function HomeView({
       .then((r) => r.json())
       .then((data: { shows: UIShow[]; nextOffset: number; hasMore: boolean }) => {
         if (cancelled) return
-        setShows(Array.isArray(data.shows) ? data.shows : [])
+        const items = Array.isArray(data.shows) ? data.shows : []
+        setShows(items)
         setOffset(data.nextOffset ?? 0)
-        setHasMore(Boolean(data.hasMore))
+        setHasMore(items.length > 0 && Boolean(data.hasMore))
         setIsLoading(false)
         window.scrollTo({ top: 0, behavior: 'smooth' })
       })
@@ -77,12 +81,16 @@ export default function HomeView({
       .then((r) => r.json())
       .then((data: { shows: UIShow[]; nextOffset: number; hasMore: boolean }) => {
         const newShows = Array.isArray(data.shows) ? data.shows : []
+        let addedCount = 0
         setShows((prev) => {
           const seen = new Set(prev.map((s) => s.id))
-          return [...prev, ...newShows.filter((s) => !seen.has(s.id))]
+          const fresh = newShows.filter((s) => !seen.has(s.id))
+          addedCount = fresh.length
+          return [...prev, ...fresh]
         })
         setOffset(data.nextOffset ?? offset)
-        setHasMore(Boolean(data.hasMore))
+        const apiHasMore = Boolean(data.hasMore)
+        setHasMore(apiHasMore && addedCount > 0)
         setIsLoading(false)
       })
       .catch(() => setIsLoading(false))
@@ -110,8 +118,8 @@ export default function HomeView({
                   onClick={() => setActiveCategory(cat)}
                   className={`flex-shrink-0 rounded-full px-2.5 py-1 font-mono text-[10px] transition-colors ${
                     active
-                      ? 'bg-rust text-cream'
-                      : 'text-cream/40 hover:text-cream/70'
+                      ? 'bg-rust text-white'
+                      : 'text-white/30 hover:text-white/70'
                   }`}
                 >
                   {cat}
@@ -121,7 +129,7 @@ export default function HomeView({
           </nav>
           <button
             onClick={() => setSearchOpen(true)}
-            className="text-cream/50 hover:text-cream flex-shrink-0 p-1"
+            className="text-white/50 hover:text-white flex-shrink-0 p-1"
             aria-label="検索"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -132,7 +140,7 @@ export default function HomeView({
         </div>
       </header>
 
-      <main className="pt-10">
+      <main className="pt-10 cursor-grab active:cursor-grabbing">
         <PodcastGrid shows={shows} isLoading={isLoading} onSelect={setSelectedShow} />
         <div ref={sentinelRef} className="h-4" />
       </main>

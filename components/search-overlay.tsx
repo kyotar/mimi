@@ -57,18 +57,18 @@ export default function SearchOverlay({ open, onClose, onSelect }: Props) {
 
   return (
     <div className="fixed inset-0 z-[60] bg-ink/95 backdrop-blur-sm overflow-y-auto">
-      <div className="sticky top-0 z-10 bg-ink/95 backdrop-blur-sm border-b border-tan/20 px-4 py-3 flex items-center gap-3">
+      <div className="sticky top-0 z-10 bg-ink/95 backdrop-blur-sm border-b border-white/10 px-4 py-3 flex items-center gap-3">
         <input
           ref={inputRef}
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="番組を検索…"
-          className="flex-1 bg-transparent border-b border-tan/40 focus:border-cream outline-none font-sans text-sm text-cream placeholder:text-cream/40 py-2"
+          className="flex-1 bg-transparent border-b border-white/20 focus:border-white outline-none font-sans text-sm text-white placeholder:text-white/40 py-2"
         />
         <button
           onClick={onClose}
-          className="font-mono text-xs text-cream/60 hover:text-cream px-2"
+          className="font-mono text-xs text-white/60 hover:text-white px-2"
         >
           閉じる
         </button>
@@ -77,13 +77,13 @@ export default function SearchOverlay({ open, onClose, onSelect }: Props) {
       <div className="px-4 py-6">
         {!query && (
           <div>
-            <p className="font-mono text-xs text-cream/40 mb-3">気分で探す</p>
+            <p className="font-mono text-xs text-white/40 mb-3">気分で探す</p>
             <div className="flex flex-wrap gap-2">
               {SUGGESTIONS.map((s) => (
                 <button
                   key={s}
                   onClick={() => setQuery(s)}
-                  className="border border-tan/30 rounded-full px-4 py-1.5 font-mono text-xs text-cream/70 hover:border-cream hover:text-cream transition-colors"
+                  className="border border-white/20 rounded-full px-4 py-1.5 font-mono text-xs text-white/70 hover:border-white hover:text-white transition-colors"
                 >
                   {s}
                 </button>
@@ -102,7 +102,7 @@ export default function SearchOverlay({ open, onClose, onSelect }: Props) {
           />
         )}
         {query && !loading && results.length === 0 && (
-          <p className="text-center font-mono text-xs text-cream/40 py-12">
+          <p className="text-center font-mono text-xs text-white/40 py-12">
             見つかりませんでした
           </p>
         )}

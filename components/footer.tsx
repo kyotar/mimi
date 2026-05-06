@@ -30,7 +30,7 @@ export default async function Footer() {
             // eslint-disable-next-line @next/next/no-img-element
             <img src={artworkUrl} alt={showName} className="w-8 h-8 rounded" />
           )}
-          <span className="font-sans text-xs text-cream/50 group-hover:text-cream/80 transition-colors">
+          <span className="font-sans text-xs text-white/40 group-hover:text-white/70 transition-colors">
             {showName} — by mimi creator
           </span>
         </a>
@@ -40,12 +40,12 @@ export default async function Footer() {
             href="https://x.com/kyota"
             target="_blank"
             rel="noopener noreferrer"
-            className="font-mono text-xs text-cream/30 hover:text-cream/60 transition-colors"
+            className="font-mono text-xs text-white/30 hover:text-white/60 transition-colors"
           >
             𝕏 @kyota
           </a>
-          <span className="text-cream/20 text-xs">·</span>
-          <span className="font-mono text-xs text-cream/30">© 2026 mimi</span>
+          <span className="text-white/20 text-xs">·</span>
+          <span className="font-mono text-xs text-white/30">© 2026 mimi</span>
         </div>
       </div>
     </footer>

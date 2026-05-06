@@ -33,7 +33,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja">
-      <body className={`${playfair.variable} ${dmSans.variable} ${dmMono.variable} bg-ink text-ink font-sans`}>
+      <body className={`${playfair.variable} ${dmSans.variable} ${dmMono.variable} bg-ink text-white font-sans`}>
         {children}
       </body>
     </html>
