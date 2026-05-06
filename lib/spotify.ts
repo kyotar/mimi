@@ -1,4 +1,4 @@
-import type { UIShow, UIEpisode } from './types'
+import type { UIShow } from './types'
 
 const TOKEN_URL = 'https://accounts.spotify.com/api/token'
 const API_BASE = 'https://api.spotify.com/v1'
@@ -35,7 +35,7 @@ async function getToken(): Promise<string> {
 interface RawShow {
   id: string
   name: string
-  publisher?: string   // present in search results, absent in full show endpoint
+  publisher?: string
   description: string
   total_episodes: number
   images: { url: string }[]
@@ -47,7 +47,6 @@ interface RawEpisode {
   name: string
   duration_ms: number
   release_date: string
-  audio_preview_url: string | null
   external_urls?: { spotify: string }
 }
 
@@ -57,12 +56,6 @@ export interface ModalEpisode {
   durationMs: number
   releaseDate: string
   spotifyUrl: string
-}
-
-function formatDuration(ms: number): string {
-  const min = Math.floor(ms / 60000)
-  const sec = Math.floor((ms % 60000) / 1000)
-  return `${min}:${sec.toString().padStart(2, '0')}`
 }
 
 function toUIShow(s: RawShow): UIShow {
@@ -77,28 +70,17 @@ function toUIShow(s: RawShow): UIShow {
   }
 }
 
-function toUIEpisode(e: RawEpisode): UIEpisode {
-  return {
-    id: e.id,
-    title: e.name,
-    duration: formatDuration(e.duration_ms),
-    publishedAt: e.release_date,
-    audioUrl: e.audio_preview_url ?? null,
-  }
-}
-
 export async function searchShows(
   query: string,
   limit = 10,
   offset = 0
 ): Promise<{ items: UIShow[]; total: number }> {
   const token = await getToken()
-  const safeLimit = Math.min(limit, 50)
   const params = new URLSearchParams({
     q: query,
     type: 'show',
     market: 'JP',
-    limit: String(safeLimit),
+    limit: String(Math.min(limit, 50)),
     offset: String(offset),
   })
   const res = await fetch(`${API_BASE}/search?${params}`, {
@@ -107,8 +89,10 @@ export async function searchShows(
   })
   if (!res.ok) throw new Error(`Spotify search failed: ${res.status}`)
   const data = await res.json()
-  const items = ((data.shows?.items ?? []) as RawShow[]).filter(Boolean).map(toUIShow)
-  return { items, total: data.shows?.total ?? 0 }
+  return {
+    items: ((data.shows?.items ?? []) as RawShow[]).filter(Boolean).map(toUIShow),
+    total: data.shows?.total ?? 0,
+  }
 }
 
 export async function getShow(id: string): Promise<UIShow | null> {
@@ -120,24 +104,6 @@ export async function getShow(id: string): Promise<UIShow | null> {
   if (res.status === 404) return null
   if (!res.ok) throw new Error(`Spotify show failed: ${res.status}`)
   return toUIShow(await res.json())
-}
-
-export async function getShowsByIds(ids: string[]): Promise<UIShow[]> {
-  if (ids.length === 0) return []
-  const results = await Promise.all(ids.slice(0, 50).map((id) => getShow(id).catch(() => null)))
-  return results.filter((s): s is UIShow => s !== null)
-}
-
-export async function getShowEpisodes(id: string, limit = 20): Promise<UIEpisode[]> {
-  const token = await getToken()
-  const params = new URLSearchParams({ market: 'JP', limit: String(limit) })
-  const res = await fetch(`${API_BASE}/shows/${id}/episodes?${params}`, {
-    headers: { Authorization: `Bearer ${token}` },
-    next: { revalidate: 3600 },
-  })
-  if (!res.ok) throw new Error(`Spotify episodes failed: ${res.status}`)
-  const data = await res.json()
-  return ((data.items ?? []) as RawEpisode[]).filter(Boolean).map(toUIEpisode)
 }
 
 export async function getModalEpisodes(id: string, limit = 3): Promise<ModalEpisode[]> {
