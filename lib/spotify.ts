@@ -48,6 +48,15 @@ interface RawEpisode {
   duration_ms: number
   release_date: string
   audio_preview_url: string | null
+  external_urls?: { spotify: string }
+}
+
+export interface ModalEpisode {
+  id: string
+  name: string
+  durationMs: number
+  releaseDate: string
+  spotifyUrl: string
 }
 
 function formatDuration(ms: number): string {
@@ -129,4 +138,24 @@ export async function getShowEpisodes(id: string, limit = 20): Promise<UIEpisode
   if (!res.ok) throw new Error(`Spotify episodes failed: ${res.status}`)
   const data = await res.json()
   return ((data.items ?? []) as RawEpisode[]).filter(Boolean).map(toUIEpisode)
+}
+
+export async function getModalEpisodes(id: string, limit = 3): Promise<ModalEpisode[]> {
+  const token = await getToken()
+  const params = new URLSearchParams({ market: 'JP', limit: String(Math.min(limit, 10)) })
+  const res = await fetch(`${API_BASE}/shows/${id}/episodes?${params}`, {
+    headers: { Authorization: `Bearer ${token}` },
+    next: { revalidate: 1800 },
+  })
+  if (!res.ok) throw new Error(`Spotify episodes failed: ${res.status}`)
+  const data = await res.json()
+  return ((data.items ?? []) as RawEpisode[])
+    .filter(Boolean)
+    .map((e) => ({
+      id: e.id,
+      name: e.name,
+      durationMs: e.duration_ms,
+      releaseDate: e.release_date,
+      spotifyUrl: e.external_urls?.spotify ?? '',
+    }))
 }
